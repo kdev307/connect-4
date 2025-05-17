@@ -27,10 +27,11 @@ function Connect4() {
 		if (winner) return;
 		for (let row = ROWS - 1; row >= 0; row--) {
 			if (board[row][column] === null) {
-				board[row][column] = currentPlayer;
-				setBoard(board);
+				const newBoard = board.map(row=>[...row]);
+                newBoard[row][column] = currentPlayer;
+                setBoard(newBoard)
                 playSound('drop.mp3')
-				if (isWinner(board, row, column, currentPlayer)) {
+				if (isWinner(newBoard, row, column, currentPlayer)) {
 					setWinner(currentPlayer);
                     playSound('win.mp3')
 				} 
@@ -56,13 +57,14 @@ function Connect4() {
 		<div className="m-auto p-4">
 			<Title title="Play Connect 4" />
 			<div className="flex items-center justify-center mt-10">
-				<GameBoard board={board} onCellClick={handleCellClick} />
+				<GameBoard board={board} onCellClick={handleCellClick} winner={winner}/>
 				<Info
 					currentPlayer={currentPlayer}
 					winner={winner}
 					onReset={resetGame}
 					modal={modal}
 					onToggleInputModal={handleToggleInputModal}
+					board={board}
 				/>
 			</div>
 		</div>
