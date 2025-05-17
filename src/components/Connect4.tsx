@@ -4,6 +4,7 @@ import Title from "./Title";
 import Info from "./Info";
 import { isWinner } from "../utils/isWinner";
 import { Board, Player, Winner } from "../types";
+import { playSound } from "../utils/playSound";
 
 const ROWS = 6,
 	COLUMNS = 7;
@@ -28,12 +29,16 @@ function Connect4() {
 			if (board[row][column] === null) {
 				board[row][column] = currentPlayer;
 				setBoard(board);
-
+                playSound('drop.mp3')
 				if (isWinner(board, row, column, currentPlayer)) {
 					setWinner(currentPlayer);
-				} else if (board.every((row) => row.every((cell) => cell !== null))) {
+                    playSound('win.mp3')
+				} 
+                else if (board.every((row) => row.every((cell) => cell !== null))) {
 					setWinner(-1);
-				} else {
+                    playSound('draw.mp3')
+				} 
+                else {
 					setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
 				}
 				break;
