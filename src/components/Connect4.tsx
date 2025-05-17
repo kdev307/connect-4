@@ -1,54 +1,67 @@
 import { useState } from "react";
-import Board from "./Board";
+import GameBoard from "./GameBoard";
 import Title from "./Title";
-import { Player } from "../types/Player";
-import Message from "./Message";
+import Info from "./Info";
 import { isWinner } from "../utils/isWinner";
+import { Board, Player, Winner } from "../types";
 
-const ROWS = 6, COLUMNS = 7;
+const ROWS = 6,
+	COLUMNS = 7;
 
-const createBoard = (): Player[][] => {
-    return Array.from({ length: ROWS }, () => Array(COLUMNS).fill(null));
-}
+const createBoard = (): Board => {
+	return Array.from({ length: ROWS }, () => Array(COLUMNS).fill(null));
+};
 
 function Connect4() {
-    const [board, setBoard] = useState<Player[][]>(createBoard());
-    const [currentPlayer, setCurrentPlayer] = useState<Player>('Red');
-    const [winner, setWinner] = useState<Player>(null);
+	const [board, setBoard] = useState<Board>(createBoard());
+	const [currentPlayer, setCurrentPlayer] = useState<Player>(0);
+	const [winner, setWinner] = useState<Winner>(null);
+	const [modal, setModal] = useState<boolean>(false);
 
-    const handleCellClick = (column: number) => {
-        if (winner) return;
-        for (let row = ROWS - 1; row >= 0; row--) {
-            if (!board[row][column]) {
-                const newBoard = board.map(row => [...row]);
-                newBoard[row][column] = currentPlayer;
-                setBoard(newBoard);
+	const handleToggleInputModal = () => {
+		setModal((prev) => !prev);
+	};
 
-                if (isWinner(newBoard, row, column, currentPlayer)) {
-                    setWinner(currentPlayer);
-                } else {
-                    setCurrentPlayer(currentPlayer === 'Red' ? 'Blue' : 'Red');
-                }
-                break;
-            }
-        }
-    };
+	const handleCellClick = (column: number) => {
+		if (winner) return;
+		for (let row = ROWS - 1; row >= 0; row--) {
+			if (board[row][column] === null) {
+				board[row][column] = currentPlayer;
+				setBoard(board);
 
-    const resetGame = () => {
-        setBoard(createBoard());
-        setCurrentPlayer('Red');
-        setWinner(null);
-    };
+				if (isWinner(board, row, column, currentPlayer)) {
+					setWinner(currentPlayer);
+				} else if (board.every((row) => row.every((cell) => cell !== null))) {
+					setWinner(-1);
+				} else {
+					setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
+				}
+				break;
+			}
+		}
+	};
 
-    return (
-        <div className="m-auto p-4">
-            <Title title="Play Connect 4" />
-            <div className="flex items-center justify-center mt-10">
-                <Board board={board} onCellClick={handleCellClick} />
-                <Message currentPlayer={currentPlayer} winner={winner} onReset={resetGame} />
-            </div>
-        </div>
-    );
+	const resetGame = () => {
+		setBoard(createBoard());
+		setCurrentPlayer(0);
+		setWinner(null);
+	};
+
+	return (
+		<div className="m-auto p-4">
+			<Title title="Play Connect 4" />
+			<div className="flex items-center justify-center mt-10">
+				<GameBoard board={board} onCellClick={handleCellClick} />
+				<Info
+					currentPlayer={currentPlayer}
+					winner={winner}
+					onReset={resetGame}
+					modal={modal}
+					onToggleInputModal={handleToggleInputModal}
+				/>
+			</div>
+		</div>
+	);
 }
 
 export default Connect4;

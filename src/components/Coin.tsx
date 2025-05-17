@@ -1,6 +1,6 @@
 interface CoinProps {
-    coinColour: string,
-    coinSize:string
+    coinColour: string | number | null;
+    coinSize: string;
 }
 
 const colorMap: Record<string, string> = {
@@ -9,15 +9,21 @@ const colorMap: Record<string, string> = {
     blue: "bg-blue-500",
     green: "bg-green-500",
     empty: "bg-white",
-    // add more if needed
 };
 
-function Coin({coinColour, coinSize}: CoinProps) {
-    const colour = colorMap[coinColour.toLowerCase()] ?? "bg-gray-200"
+function Coin({ coinColour, coinSize }: CoinProps) {
+    let colorKey: string;
+
+    if (coinColour === 0) colorKey = "red";
+    else if (coinColour === 1) colorKey = "blue";
+    else if (typeof coinColour === "string") colorKey = coinColour.toLowerCase();
+    else colorKey = "empty";
+
+    const colour = colorMap[colorKey] ?? "bg-gray-200";
+
     return (
-        <div className={`${coinSize} rounded-full shadow-md cursor ${colour} border-2 border-black` }></div>
-        
-    )
+        <div className={`${coinSize} rounded-full shadow-md cursor ${colour} border-2 border-black`}></div>
+    );
 }
 
-export default Coin
+export default Coin;

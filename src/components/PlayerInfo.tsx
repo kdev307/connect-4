@@ -1,4 +1,5 @@
-import { Player } from "../types/Player";
+
+import { Player } from "../types";
 import Coin from "./Coin";
 
 interface PlayerInfoProps {
@@ -13,12 +14,12 @@ function PlayerInfo({ numPlayer = 2, currentPlayer }: PlayerInfoProps) {
     const selectedColors = playerColors.slice(0, numPlayer);
     const getHighlightColor = (color: string) => {
         const colorMap: Record<string, string> = {
-            red: "bg-red-100",    // Lighter red
-            blue: "bg-blue-100",  // Lighter blue
-            yellow: "bg-yellow-100",  // Lighter yellow
-            green: "bg-green-100",  // Lighter green
+            red: "bg-red-100",
+            blue: "bg-blue-100", 
+            yellow: "bg-yellow-100", 
+            green: "bg-green-100", 
         };
-        return colorMap[color.toLowerCase()] || "bg-gray-100"; // Default to gray if color not found
+        return colorMap[color.toLowerCase()] || "bg-gray-100";
     };
 
     return (
@@ -26,7 +27,7 @@ function PlayerInfo({ numPlayer = 2, currentPlayer }: PlayerInfoProps) {
             <h3 className="text-3xl font-medium mb-4">Number of Players: {numPlayer}</h3>
             <ul className="overflow-y-auto flex flex-col gap-10 w-full">
                 {selectedColors.map((color, index) => {
-                    const isCurrentPlayer = currentPlayer === color;
+                    const isCurrentPlayer = currentPlayer === index;
                     const playerClass = isCurrentPlayer ? getHighlightColor(color) : "";
                     return (
                         <li key={index} className={`flex items-center space-x-3 ${playerClass} py-2 px-4 rounded-full`}>

@@ -1,12 +1,12 @@
-import { Player } from "../types/Player"
+import { Board } from "../types"
 import Cells from "./Cells"
 
-interface BoardProps{
-  board: Player[][],
+interface GameBoardProps{
+  board: Board,
   onCellClick: (columnIndex: number)=> void
 }
 
-function Board({board, onCellClick}: BoardProps) {
+function GameBoard({board, onCellClick}: GameBoardProps) {
   return (
     <div className="w-fit mx-auto p-10 bg-[#f6f5d0] flex flex-col gap-10 items-center justify-center border-2 rounded-xl">
       {board.map((row, rowIndex)=>(
@@ -22,4 +22,4 @@ function Board({board, onCellClick}: BoardProps) {
   )
 }
 
-export default Board
+export default GameBoard

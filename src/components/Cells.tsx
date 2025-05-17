@@ -1,16 +1,17 @@
-import { Player } from "../types/Player"
+import { Cell } from "../types";
 import Coin from "./Coin";
 
-interface CellProps{
-    value: Player;
-    onClick: ()=>void
-}
-function Cells({value, onClick}: CellProps) {
-    return (
-        <div className="w-40 h-40 flex items-center justify-center rounded-md" onClick={onClick}>
-            <Coin coinColour={value ?? "empty"} coinSize="size-36"/>
-        </div>
-    )
+interface CellProps {
+    value: Cell;
+    onClick: () => void;
 }
 
-export default Cells
+function Cells({ value, onClick }: CellProps) {
+    return (
+        <div className="w-40 h-40 flex items-center justify-center rounded-md" onClick={onClick}>
+            <Coin coinColour={value === 0 ? "red" : value === 1 ? "blue" : "empty"} coinSize="size-36" />
+        </div>
+    );
+}
+
+export default Cells;
