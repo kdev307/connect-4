@@ -176,22 +176,24 @@ export async function playMove(
 		currentTurn: newWinner === null ? (player === 0 ? 1 : 0) : currentTurn,
 		winner: newWinner,
 		updatedAt: Timestamp.now(),
+		status:"finished",
 	};
-
+	
 	await updateDoc(roomRef, updateData);
 }
 
 export async function resetGame(roomCode: string): Promise<void> {
 	const roomRef = doc(db, "rooms", roomCode);
 	const emptyBoard: Board = Array(ROWS)
-		.fill(null)
-		.map(() => Array(COLUMNS).fill(null))
-		.flat();
-
+	.fill(null)
+	.map(() => Array(COLUMNS).fill(null))
+	.flat();
+	
 	await updateDoc(roomRef, {
 		board: emptyBoard,
 		currentTurn: 0,
 		winner: null,
+		status:"playing",
 		updatedAt: Timestamp.now(),
 	});
 }

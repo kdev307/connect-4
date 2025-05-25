@@ -15,13 +15,11 @@ import { getAuth } from "firebase/auth";
 
 function Connect4() {
 	const [board, setBoard] = useState<Board | null>(null);
-	// const [players, setPlayers] = useState<{ [key: number]: string }>({});
 
 	const [players, setPlayers] = useState<{
 		[key: number]: { name: string; uid: string };
 	}>({});
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(0);
-	// const [status, setStatus] = useState<string>("waiting");
 	const [winner, setWinner] = useState<Winner>(null);
 	const [modal, setModal] = useState<boolean>(false);
 
