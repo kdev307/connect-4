@@ -26,7 +26,7 @@ function PlayerInfo({players, currentPlayer }: PlayerInfoProps) {
                             key={key}
                             className={`flex items-center space-x-3 ${playerBackgroundColor} py-2 px-4 rounded-full`}
                         >
-                            <Coin coinColour={index === 0 ? "red" : "blue"} coinSize="size-20" />
+                            <Coin coinColour={index === 0 ? "gold" : "silver"} coinSize="size-20" />
                             <span className={`text-xl ${isCurrentPlayer ? "font-bold" : ""}`}>
                                 {player.name}
                             </span>

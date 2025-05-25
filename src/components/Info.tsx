@@ -40,7 +40,6 @@ function Info({
 	const handleCloseResult = () => {
 		setShowResult(false);
 		stopSound();
-		stopSound();
 	};
 
 	if (!board) return <h3>Unable to load the board</h3>;

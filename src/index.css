@@ -10,7 +10,7 @@ body {
 	/* background: linear-gradient(90deg, #6a5acd, #00bcd4, #ff7f50, #ff6347); */
     /* background: linear-gradient(90deg, #ff4081, #3f51b5, #9c27b0, #00bcd4); */
     /* background: linear-gradient(90deg, #00bcd4, #3e8e41, #6a1b9a, #4caf50); */
-    background: linear-gradient(90deg, #8e2de2, #4a00e0, #ff4b5c, #ff7f50);
+    /* background: linear-gradient(90deg, #8e2de2, #4a00e0, #ff4b5c, #ff7f50); */
 	background-size: 400% 400%;
 	animation: gradientMove 7.5s ease infinite;
 }

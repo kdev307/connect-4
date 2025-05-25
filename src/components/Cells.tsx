@@ -13,12 +13,12 @@ interface CellProps {
 
 function Cells({ value, onClick, onMouseEnter, onMouseLeave, onTouchStart, onTouchEnd, disabled }: CellProps) {
     return (
-        <div className={`w-40 h-40 flex items-center justify-center rounded-md  ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} onClick={disabled ? undefined : onClick}
+        <div className={`w-40 h-40 flex items-center justify-center rounded-md  ${disabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`} onClick={disabled ? undefined : onClick}
         onMouseEnter={disabled ? undefined : onMouseEnter}
         onMouseLeave={disabled ? undefined : onMouseLeave}
         onTouchStart={disabled ? undefined : onTouchStart}
         onTouchEnd={disabled ? undefined : onTouchEnd}>
-            <Coin coinColour={value === 0 ? "red" : value === 1 ? "blue" : "empty"} coinSize="size-36" />
+            <Coin coinColour={value === 0 ? "gold" : value === 1 ? "silver" : "empty"} coinSize="size-36" />
         </div>
     );
 }
