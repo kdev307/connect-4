@@ -26,37 +26,41 @@ function Info({
 	// onToggleInputModal,
 	board,
 }: InfoProps) {
-
 	const auth = getAuth();
-const currentUserUid = auth.currentUser?.uid;
+	const currentUserUid = auth.currentUser?.uid;
 
 	const [showResult, setShowResult] = useState(false);
 
-	
-
-	
 	useEffect(() => {
 		if (winner !== null) {
 			setShowResult(true);
 		}
 	}, [winner]);
-	
+
 	const handleCloseResult = () => {
 		setShowResult(false);
 		stopSound();
+		stopSound();
 	};
 
-	if(!board)
-		return <h3>Unable to load the board</h3>
+	if (!board) return <h3>Unable to load the board</h3>;
 	const gameHasStarted = board.some((row) => row.some((cell) => cell !== null));
 	return (
 		<>
 			<div className="mx-auto p-4 flex flex-col items-center justify-center gap-10">
 				<h2
 					className={`text-4xl text-center font-bold 
-		${currentPlayer === 0 ? "text-red-700" : "text-blue-700"}`}
+		${currentPlayer === 0 ? "text-red-700" : "text-blue-700"} ${
+						winner !== null || Object.keys(players).length < 2 && "!text-purple-700"
+					}`}
 				>
-					{winner === null && players[currentPlayer]?.uid === currentUserUid ? `It's your turn ${players[currentPlayer]?.name}` : `Waiting for ${players[currentPlayer]?.name} to move`}
+					{Object.keys(players).length < 2
+						? "Waiting for an opponent. Share the code to invite someone."
+						: winner !== null
+						? "Game Over!"
+						: players[currentPlayer]?.uid === currentUserUid
+						? `It's your turn ${players[currentPlayer]?.name}`
+						: `Waiting for ${players[currentPlayer]?.name} to move`}
 				</h2>
 
 				{showResult && winner !== null && (
