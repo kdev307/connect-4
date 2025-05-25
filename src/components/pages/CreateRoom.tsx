@@ -19,6 +19,7 @@ function CreateRoom() {
 
 		try {
 			const roomCode = await createRoom(name.trim());
+			sessionStorage.setItem("playerName", name.trim());
 			navigate(`/room/${roomCode}`);
 		} catch (error) {
 			console.error(error);

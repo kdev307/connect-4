@@ -1,12 +1,28 @@
 import { generateRoomCode } from "../utils/generateRoomCode";
 import { db } from "../firebase/firebase";
-import {  doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-
+import {
+	deleteDoc,
+	doc,
+	getDoc,
+	setDoc,
+	Timestamp,
+	updateDoc,
+} from "firebase/firestore";
+import { getAuth, signInAnonymously } from "firebase/auth";
+import { isWinner } from "../utils/isWinner";
+import { Board, Cell, Player, Winner } from "../types";
+import { COLUMNS, ROWS } from "../constants";
 
 export async function createRoom(playerName: string): Promise<string> {
 	try {
 		let roomCode = generateRoomCode();
 		let exists = true;
+
+		const auth = getAuth();
+	if (!auth.currentUser) {
+		await signInAnonymously(auth);
+	}
+	const uid = auth.currentUser?.uid;
 
 		for (let i = 0; i < 5; i++) {
 			const roomRef = doc(db, "rooms", roomCode);
@@ -15,9 +31,13 @@ export async function createRoom(playerName: string): Promise<string> {
 			if (!roomSnap.exists()) {
 				exists = false;
 				await setDoc(roomRef, {
-					board: Array(6).fill(null).map(() => Array(7).fill(null)).flat(),
-					players: { 0: playerName },
+					board: Array(ROWS)
+						.fill(null)
+						.map(() => Array(COLUMNS).fill(null))
+						.flat(),
+					players: {0:{ name:playerName, uid }},
 					currentTurn: 0,
+					winner: null,
 					status: "waiting",
 					createdAt: new Date().toISOString(),
 				});
@@ -34,7 +54,16 @@ export async function createRoom(playerName: string): Promise<string> {
 	}
 }
 
-export async function joinRoom(roomCode: string, playerName: string): Promise<void> {
+export async function joinRoom(
+	roomCode: string,
+	playerName: string
+): Promise<void> {
+	const auth = getAuth();
+	if (!auth.currentUser) {
+		await signInAnonymously(auth);
+	}
+	const uid = auth.currentUser?.uid;
+
 	const normalizedCode = roomCode.trim().toUpperCase();
 	const roomRef = doc(db, "rooms", normalizedCode);
 	const roomSnap = await getDoc(roomRef);
@@ -46,12 +75,18 @@ export async function joinRoom(roomCode: string, playerName: string): Promise<vo
 	const data = roomSnap.data();
 	const players = data.players || {};
 
+	for (const key in players) {
+		if (players[key] === playerName) {
+			throw new Error("This name is already taken in the room.");
+		}
+	}
+
 	if (players["0"] && players["1"]) {
 		throw new Error("Room is full.");
 	}
 
 	const playerIndex = players["0"] ? 1 : 0;
-	players[playerIndex] = playerName;
+	players[playerIndex] = { name: playerName, uid };;
 
 	await updateDoc(roomRef, {
 		players,
@@ -59,3 +94,104 @@ export async function joinRoom(roomCode: string, playerName: string): Promise<vo
 	});
 }
 
+export async function leaveRoom(
+	roomCode: string,
+	playerName: string
+): Promise<void> {
+	const normalizedCode = roomCode.trim().toUpperCase();
+	const roomRef = doc(db, "rooms", normalizedCode);
+	const roomSnap = await getDoc(roomRef);
+
+	if (!roomSnap.exists()) {
+		throw new Error("Room not found.");
+	}
+
+	const data = roomSnap.data();
+	const players = data.players || {};
+
+	for (const key in players) {
+		if (players[key] === playerName) {
+			delete players[key];
+		}
+	}
+
+	const isEmpty = Object.keys(players).length === 0;
+
+	if (isEmpty) {
+		await deleteDoc(roomRef);
+	} else {
+		await updateDoc(roomRef, {
+			players,
+			status: "waiting",
+		});
+	}
+}
+
+export async function playMove(
+	roomCode: string,
+	column: number,
+	player: Player
+): Promise<void> {
+	const roomRef = doc(db, "rooms", roomCode);
+	const roomSnap = await getDoc(roomRef);
+
+	if (!roomSnap.exists()) throw new Error("Room does not exist");
+
+	const data = roomSnap.data();
+	const flatBoard: Cell[] = data.board;
+	const currentTurn: Player = data.currentTurn;
+	const winner: Winner = data.winner;
+
+	const board: Board = [];
+	for (let row = 0; row < ROWS; row++) {
+		board.push(flatBoard.slice(row * COLUMNS, (row + 1) * COLUMNS));
+	}
+
+	if (winner !== null) throw new Error("Game is already finished");
+	if (player !== currentTurn) throw new Error("It's not your turn");
+
+	let rowToPlace = -1;
+	for (let row = ROWS - 1; row >= 0; row--) {
+		if (board[row][column] === null) {
+			rowToPlace = row;
+			break;
+		}
+	}
+
+	if (rowToPlace === -1) throw new Error("Column is full");
+
+	board[rowToPlace][column] = player;
+
+	let newWinner: Winner = null;
+	if (isWinner(board, rowToPlace, column, player)) {
+		newWinner = player;
+	} else if (board.every((row) => row.every((cell) => cell !== null))) {
+		newWinner = -1;
+	}
+
+	const updatedFlatBoard = board.flat();
+
+	const updateData = {
+		board: updatedFlatBoard,
+		currentTurn: newWinner === null ? (player === 0 ? 1 : 0) : currentTurn,
+		winner: newWinner,
+		updatedAt: Timestamp.now(),
+	};
+
+	await updateDoc(roomRef, updateData);
+}
+
+export async function resetGame(roomCode: string): Promise<void> {
+	const roomRef = doc(db, "rooms", roomCode);
+	const emptyBoard: Board = Array(ROWS)
+		.fill(null)
+		.map(() => Array(COLUMNS).fill(null))
+		.flat();
+
+	await updateDoc(roomRef, {
+		board: emptyBoard,
+		currentTurn: 0,
+		winner: null,
+		updatedAt: Timestamp.now(),
+	});
+}

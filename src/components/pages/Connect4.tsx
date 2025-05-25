@@ -2,65 +2,80 @@ import { useEffect, useState } from "react";
 import GameBoard from "../GameBoard";
 import Title from "../Title";
 import Info from "../Info";
-import { isWinner } from "../../utils/isWinner";
+// import { isWinner } from "../../utils/isWinner";
 import { Board, Player, Winner } from "../../types";
 import { playSound, stopSound } from "../../utils/sounds";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
-// import Buttons from "../Buttons";
-
-const ROWS = 6,
-	COLUMNS = 7;
-
-const createBoard = (): Board => {
-	return Array.from({ length: ROWS }, () => Array(COLUMNS).fill(null));
-};
+import { leaveRoom, playMove, resetGame } from "../../firebase/service";
+import Buttons from "../Buttons";
+import { COLUMNS, ROWS } from "../../constants";
+import { getAuth } from "firebase/auth";
 
 function Connect4() {
-	const [board, setBoard] = useState<Board>(createBoard());
-	const [players, setPlayers] = useState<{ [key: number]: string }>({});
+	const [board, setBoard] = useState<Board | null>(null);
+	// const [players, setPlayers] = useState<{ [key: number]: string }>({});
+
+	const [players, setPlayers] = useState<{
+		[key: number]: { name: string; uid: string };
+	}>({});
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(0);
+	// const [status, setStatus] = useState<string>("waiting");
 	const [winner, setWinner] = useState<Winner>(null);
 	const [modal, setModal] = useState<boolean>(false);
 
 	const { roomCode } = useParams();
-	// const [roomLoaded, setRoomLoaded] = useState(false);
-
+	const navigate = useNavigate();
 
 	const handleToggleInputModal = () => {
 		setModal((prev) => !prev);
 	};
 
-	const handleCellClick = (column: number) => {
+	const handleCellClick = async (column: number) => {
 		if (winner) return;
-		for (let row = ROWS - 1; row >= 0; row--) {
-			if (board[row][column] === null) {
-				const newBoard = board.map(row=>[...row]);
-                newBoard[row][column] = currentPlayer;
-                setBoard(newBoard)
-                playSound('drop.mp3')
-				if (isWinner(newBoard, row, column, currentPlayer)) {
-					setWinner(currentPlayer);
-                    playSound('win.mp3')
-				} 
-                else if (board.every((row) => row.every((cell) => cell !== null))) {
-					setWinner(-1);
-                    playSound('draw.mp3')
-				} 
-                else {
-					setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
-				}
-				break;
-			}
+		if (!roomCode) return;
+		if (Object.entries(players).length < 2) {
+			alert("Waiting for another player to join.");
+			return;
+		}
+		const auth = getAuth();
+		const currentUid = auth.currentUser?.uid;
+		const currentTurnUid = players[currentPlayer]?.uid;
+
+		if (currentUid !== currentTurnUid) {
+			alert("It's not your turn!");
+			return;
+		}
+
+		try {
+			await playMove(roomCode, column, currentPlayer);
+			playSound("drop.mp3");
+		} catch (error) {
+			console.error("Failed to play move:", error);
+			alert(error);
 		}
 	};
 
-	const resetGame = () => {
-		stopSound()
-		setBoard(createBoard());
-		setCurrentPlayer(0);
-		setWinner(null);
+	const handleResetGame = async () => {
+		if (!roomCode) return;
+		try {
+			await resetGame(roomCode);
+			stopSound();
+		} catch (err) {
+			console.error("Reset failed:", err);
+		}
+	};
+
+	const handleLeaveRoom = async () => {
+		if (!roomCode) return;
+		try {
+			stopSound();
+			await leaveRoom(roomCode, "YourPlayerName");
+			navigate("/");
+		} catch (err) {
+			alert("Error leaving room: " + err);
+		}
 	};
 
 
@@ -77,7 +92,6 @@ function Connect4() {
 
 			const data = snap.data();
 
-			// Handle 1D or 2D board from Firestore
 			let parsedBoard: Board;
 			if (Array.isArray(data.board[0])) {
 				parsedBoard = data.board;
@@ -88,42 +102,69 @@ function Connect4() {
 			}
 
 			setBoard(parsedBoard);
-			setCurrentPlayer(currentPlayer);
+			setCurrentPlayer(data.currentTurn);
 			setWinner(data.winner ?? null);
 
-			
 			if (data.players && typeof data.players === "object") {
-				const names: { [key: number]: string } = {};
+				const player: { [key: number]: { name: string; uid: string } } = {};
 				for (const [key, value] of Object.entries(data.players)) {
-					if (typeof value === "string") {
-						names[parseInt(key)] = value;
+					const playerData = value as { name: string; uid: string };
+					if (playerData.name && playerData.uid) {
+						player[parseInt(key)] = playerData;
 					}
 				}
-				setPlayers(names);
+				setPlayers(player);
 			}
-			
 		});
 
 		return () => unsubscribe();
 	}, [roomCode]);
 
+	
+	useEffect(() => {
+		if (winner === null) return;
+		if (Object.keys(players).length < 2) return;
+
+		const auth = getAuth();
+		const currentUid = auth.currentUser?.uid;
+
+		if (winner === -1) {
+			playSound("draw.mp3");
+		} else if (players[winner]?.uid === currentUid) {
+			playSound("win.mp3");
+		} else {
+			playSound("lose.mp3");
+		}
+
+	}, [winner, players]);
+
 	return (
 		<div className="m-auto p-4 flex flex-col items-center justify-center gap-4">
-			<Title title="Play Connect 4" style="text-7xl font-extrabold text-[#014210]"/>
-			<Title title={`Room Code - ${roomCode}`} style="text-5xl font-bold text-[#707]"/>
-				{/* <Buttons
-						type="submit"
-						text="Leave Room"
-						onClick={handleLeaveRoom}
-						style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
-					/> */}
-			<div className="flex items-center justify-center mt-10 gap-60">
-				<GameBoard board={board} onCellClick={handleCellClick} winner={winner}/>
+			<Title
+				title="Play Connect 4"
+				style="text-7xl font-extrabold text-[#014210]"
+			/>
+			<Title
+				title={`Room Code - ${roomCode}`}
+				style="text-5xl font-bold text-[#707]"
+			/>
+			<Buttons
+				type="submit"
+				text="Leave Room"
+				onClick={handleLeaveRoom}
+				style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
+			/>
+			<div className="flex flex-col md:flex-row items-center justify-center mt-10 gap-60">
+				<GameBoard
+					board={board}
+					onCellClick={handleCellClick}
+					winner={winner}
+				/>
 				<Info
 					players={players}
 					currentPlayer={currentPlayer}
 					winner={winner}
-					onReset={resetGame}
+					onReset={handleResetGame}
 					modal={modal}
 					onToggleInputModal={handleToggleInputModal}
 					board={board}

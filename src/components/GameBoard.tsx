@@ -2,12 +2,14 @@ import { Board, Winner } from "../types"
 import Cells from "./Cells"
 
 interface GameBoardProps{
-  board: Board,
+  board: Board | null,
   onCellClick: (columnIndex: number)=> void
   winner: Winner;
 }
 
 function GameBoard({board, onCellClick, winner}: GameBoardProps) {
+  if(!board)
+      return <h3>Unable to load the board</h3>
   return (
     <div className="w-fit mx-auto p-10 bg-[#f6f5d0] flex flex-col gap-10 items-center justify-center border-2 rounded-xl">
       {board.map((row, rowIndex)=>(

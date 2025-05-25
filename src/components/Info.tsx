@@ -5,15 +5,16 @@ import Buttons from "./Buttons";
 import PlayerInfo from "./PlayerInfo";
 import Result from "./Result";
 import { stopSound } from "../utils/sounds";
+import { getAuth } from "firebase/auth";
 
 interface InfoProps {
-	players: { [key: number]: string };
+	players: { [key: number]: { name: string; uid: string } };
 	currentPlayer: Player;
 	winner: Winner;
 	onReset: () => void;
 	modal: boolean;
 	onToggleInputModal: () => void;
-	board: Board;
+	board: Board | null;
 }
 
 function Info({
@@ -25,37 +26,37 @@ function Info({
 	// onToggleInputModal,
 	board,
 }: InfoProps) {
+
+	const auth = getAuth();
+const currentUserUid = auth.currentUser?.uid;
+
 	const [showResult, setShowResult] = useState(false);
 
-	const gameHasStarted = board.some((row) => row.some((cell) => cell !== null));
+	
 
+	
 	useEffect(() => {
 		if (winner !== null) {
 			setShowResult(true);
 		}
 	}, [winner]);
-
+	
 	const handleCloseResult = () => {
 		setShowResult(false);
 		stopSound();
 	};
 
+	if(!board)
+		return <h3>Unable to load the board</h3>
+	const gameHasStarted = board.some((row) => row.some((cell) => cell !== null));
 	return (
 		<>
 			<div className="mx-auto p-4 flex flex-col items-center justify-center gap-10">
-				{/* <h2
-					className={`text-4xl text-center font-bold 
-                    ${currentPlayer === 0 ? "text-red-700" : "text-blue-700"}`}
-				>
-					{winner === null && `Player ${currentPlayer + 1}'s turn`}
-				</h2> */}
-
 				<h2
 					className={`text-4xl text-center font-bold 
 		${currentPlayer === 0 ? "text-red-700" : "text-blue-700"}`}
 				>
-					{winner === null &&
-						`${players[currentPlayer] || `Player ${currentPlayer + 1}`}'s turn`}
+					{winner === null && players[currentPlayer]?.uid === currentUserUid ? `It's your turn ${players[currentPlayer]?.name}` : `Waiting for ${players[currentPlayer]?.name} to move`}
 				</h2>
 
 				{showResult && winner !== null && (
@@ -67,7 +68,7 @@ function Info({
 						message={
 							winner && winner === -1
 								? "It's a Draw"
-								: `${players[currentPlayer]} wins!`
+								: `${players[currentPlayer]?.name}  wins!`
 						}
 						messageStyle={
 							winner && winner === -1

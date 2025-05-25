@@ -3,7 +3,7 @@ import { Player } from "../types";
 import Coin from "./Coin";
 
 interface PlayerInfoProps {
-    players: { [key: number]: string };
+    players: { [key: number]: {name: string, uid:string} };
     currentPlayer: Player;
 }
 
@@ -32,7 +32,7 @@ function PlayerInfo({players, currentPlayer }: PlayerInfoProps) {
                     return (
                         <li key={key} className={`flex items-center space-x-3 ${playerClass} py-2 px-4 rounded-full`}>
                             <Coin coinColour={playerColors[index]} coinSize="size-20" />
-                            <span className={`text-xl ${isCurrentPlayer ? "font-bold" : ""}`}>{player}</span>
+                            <span className={`text-xl ${isCurrentPlayer ? "font-bold" : ""}`}>{player.name}</span>
 
                         </li>
                     );
