@@ -176,7 +176,7 @@ export async function playMove(
 		currentTurn: newWinner === null ? (player === 0 ? 1 : 0) : currentTurn,
 		winner: newWinner,
 		updatedAt: Timestamp.now(),
-		status:"finished",
+		status:(newWinner!== null && newWinner!== -1) ? "finished" : "playing",
 	};
 	
 	await updateDoc(roomRef, updateData);

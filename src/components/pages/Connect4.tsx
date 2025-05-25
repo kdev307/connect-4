@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import GameBoard from "../GameBoard";
 import Title from "../Title";
 import Info from "../Info";
-// import { isWinner } from "../../utils/isWinner";
 import { Board, Player, Winner } from "../../types";
 import { playSound, stopSound } from "../../utils/sounds";
 import { useNavigate, useParams } from "react-router";
@@ -22,6 +21,8 @@ function Connect4() {
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(0);
 	const [winner, setWinner] = useState<Winner>(null);
 	const [modal, setModal] = useState<boolean>(false);
+	const [lastMove, setLastMove] = useState<{ row: number; col: number } | null>(null);
+
 
 	const { roomCode } = useParams();
 	const navigate = useNavigate();
@@ -47,7 +48,17 @@ function Connect4() {
 		}
 
 		try {
+			if (!board) return;
+			let targetRow: number = -1;
+
+		for (let row = ROWS - 1; row >= 0; row--) {
+			if (board[row][column] === null) {
+				targetRow = row;
+				break;
+			}
+		}
 			await playMove(roomCode, column, currentPlayer);
+			setLastMove({ row: targetRow, col: column })
 			playSound("drop.mp3");
 		} catch (error) {
 			console.error("Failed to play move:", error);
@@ -63,6 +74,7 @@ function Connect4() {
 		} catch (err) {
 			console.error("Reset failed:", err);
 		}
+		setLastMove(null)
 	};
 
 	const handleLeaveRoom = async () => {
@@ -142,23 +154,26 @@ function Connect4() {
 				title="Play Connect 4"
 				style="text-7xl font-extrabold text-[#014210]"
 			/>
+			<div className="flex items-center justify-center gap-20">
 			<Title
 				title={`Room Code - ${roomCode}`}
 				style="text-5xl font-bold text-[#707]"
-			/>
-			<Buttons
+				/>
+				<Buttons
 				type="submit"
 				text="Leave Room"
 				onClick={handleLeaveRoom}
 				style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
 			/>
-			<div className="flex flex-col md:flex-row items-center justify-center gap-20 py-0 px-10">
+				</div>
+			<div className="flex flex-col md:flex-row items-center justify-center gap-40 py-0 px-10 w-4/5">
 				<GameBoard
 					players={players}
 					board={board}
 					onCellClick={handleCellClick}
 					winner={winner}
 					currentPlayer={currentPlayer}
+					lastMove={lastMove}
 				/>
 				<Info
 					players={players}
@@ -170,6 +185,8 @@ function Connect4() {
 					board={board}
 				/>
 			</div>
+			
+			
 		</div>
 	);
 }

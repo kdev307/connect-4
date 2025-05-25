@@ -11,6 +11,7 @@ interface GameBoardProps {
 	onCellClick: (columnIndex: number) => void;
 	winner: Winner;
 	currentPlayer: Player;
+  lastMove: {row: number, col: number} | null;
 }
 
 function GameBoard({
@@ -19,6 +20,7 @@ function GameBoard({
 	onCellClick,
 	winner,
 	currentPlayer,
+  lastMove,
 }: GameBoardProps) {
 	const [hoverColumn, setHoverColumn] = useState<number | null>(null);
 	if (!board) return <h3>Unable to load the board</h3>;
@@ -27,28 +29,28 @@ function GameBoard({
 	const currentUserUid = auth.currentUser?.uid;
 	return (
 		<div className="flex flex-col items-center justify-center">
-			<div className="flex gap-10 mb-4">
+			<div className="flex gap-5 mb-4">
 				{Array.from({ length: COLUMNS }).map((_, colIndex) => (
 					<div
 						key={colIndex}
-						className="size-40 opacity-75 flex items-center justify-center"
+						className="size-36 opacity-75 flex items-center justify-center"
 					>
 						{hoverColumn === colIndex &&
 							players[currentPlayer]?.uid === currentUserUid && (
 								<Coin
 									coinColour={currentPlayer === 0 ? "gold" : "silver"}
-									coinSize="size-36"
+									coinSize="size-32"
 								/>
 							)}
 					</div>
 				))}
 			</div>
 
-			<div className="w-fit mx-auto p-10 bg-[#62422e] flex flex-col gap-10 items-center justify-center border-2 rounded-xl">
+			<div className="w-fit mx-auto p-10 bg-[#62422e] flex flex-col gap-5 items-center justify-center border-2 rounded-xl">
 				{board.map((row, rowIndex) => (
 					<div
 						key={rowIndex}
-						className="flex items-center justify-center gap-10"
+						className="flex items-center justify-center gap-5"
 					>
 						{row.map((cell, columnIndex) => (
 							<Cells
@@ -60,6 +62,8 @@ function GameBoard({
 								onTouchStart={() => setHoverColumn(columnIndex)}
 								onTouchEnd={() => setHoverColumn(null)}
 								disabled={winner !== null}
+                animateDrop={lastMove?.row === rowIndex && lastMove?.col === columnIndex}
+
 							/>
 						))}
 					</div>
