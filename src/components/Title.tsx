@@ -1,10 +1,11 @@
 interface TitleProps{
-    title: string
+    title: string;
+    style: string;
 }
 
-function Title({title}: TitleProps) {
+function Title({title, style}: TitleProps) {
     return (
-    <h2 className="py-4 text-7xl font-extrabold font- text-center text-[#014210]">{title}</h2>
+    <h2 className={`py-4 text-center ${style}`}>{title}</h2>
     )
 }
 
