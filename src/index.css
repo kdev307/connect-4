@@ -8,9 +8,9 @@
 
 body {
 	/* background: linear-gradient(90deg, #6a5acd, #00bcd4, #ff7f50, #ff6347); */
-    /* background: linear-gradient(90deg, #ff4081, #3f51b5, #9c27b0, #00bcd4); */
-    /* background: linear-gradient(90deg, #00bcd4, #3e8e41, #6a1b9a, #4caf50); */
-    /* background: linear-gradient(90deg, #8e2de2, #4a00e0, #ff4b5c, #ff7f50); */
+	/* background: linear-gradient(90deg, #ff4081, #3f51b5, #9c27b0, #00bcd4); */
+	/* background: linear-gradient(90deg, #00bcd4, #3e8e41, #6a1b9a, #4caf50); */
+	/* background: linear-gradient(90deg, #8e2de2, #4a00e0, #ff4b5c, #ff7f50); */
 	background-size: 400% 400%;
 	animation: gradientMove 7.5s ease infinite;
 }
@@ -26,3 +26,80 @@ body {
 		background-position: 0% 50%;
 	}
 }
+
+.shine-gold {
+	background: linear-gradient(
+		45deg,
+		#ffd700 0%,
+		#ffd700 40%,
+		#ffffff 50%,
+		#ffd700 60%,
+		#ffd700 100%
+	);
+	background-size: 300% 100%;
+	animation: shine 3s infinite linear;
+}
+
+.shine-silver {
+	background: linear-gradient(
+		45deg,
+		#c0c0c0 0%,
+		#c0c0c0 40%,
+		#ffffff 50%,
+		#c0c0c0 60%,
+		#c0c0c0 100%
+	);
+	background-size: 300% 100%;
+	animation: shine 3s infinite linear;
+}
+
+/* @keyframes goldShine {
+	0% {
+		background-position: 0% 50%;
+		box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+	}
+	50% {
+		background-position: 100% 50%;
+		box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+	}
+	100% {
+		background-position: 0% 50%;
+		box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+	}
+} */
+
+@keyframes shine {
+	0% {
+		background-position: 200% 0;
+	}
+	100% {
+		background-position: -100% 0;
+	}
+}
+
+/*@keyframes goldShine {
+    /* 0%, 100% {
+        filter: brightness(1);
+      }
+      50% {
+        filter: brightness(1.2);
+        } }*/
+
+/* @keyframes silverShine {
+	0%,
+	100% {
+		background: radial-gradient(circle at 30% 30%, #c0c0c0);
+		box-shadow: 0 0 15px rgba(221, 221, 220, 0.5);
+        }
+        50% {
+            background: radial-gradient(circle at 30% 30%, #f0f0f0);
+            box-shadow: 0 0 25px rgba(136, 136, 135, 0.8);
+} }*/
+/* @keyframes silverShine {
+	/* 0%, 100% {
+        filter: brightness(1);
+      }
+      50% {
+        filter: brightness(1.2);
+    }
+    } */

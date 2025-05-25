@@ -20,9 +20,12 @@ function Connect4() {
 	}>({});
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(0);
 	const [winner, setWinner] = useState<Winner>(null);
-	const [modal, setModal] = useState<boolean>(false);
-	const [lastMove, setLastMove] = useState<{ row: number; col: number } | null>(null);
+	const [winningCells, setWinningCells] = useState<[number, number][]>([]);
 
+	const [modal, setModal] = useState<boolean>(false);
+	const [lastMove, setLastMove] = useState<{ row: number; col: number } | null>(
+		null
+	);
 
 	const { roomCode } = useParams();
 	const navigate = useNavigate();
@@ -51,14 +54,14 @@ function Connect4() {
 			if (!board) return;
 			let targetRow: number = -1;
 
-		for (let row = ROWS - 1; row >= 0; row--) {
-			if (board[row][column] === null) {
-				targetRow = row;
-				break;
+			for (let row = ROWS - 1; row >= 0; row--) {
+				if (board[row][column] === null) {
+					targetRow = row;
+					break;
+				}
 			}
-		}
 			await playMove(roomCode, column, currentPlayer);
-			setLastMove({ row: targetRow, col: column })
+			setLastMove({ row: targetRow, col: column });
 			playSound("drop.mp3");
 		} catch (error) {
 			console.error("Failed to play move:", error);
@@ -74,7 +77,8 @@ function Connect4() {
 		} catch (err) {
 			console.error("Reset failed:", err);
 		}
-		setLastMove(null)
+		setLastMove(null);
+		setWinningCells([]);
 	};
 
 	const handleLeaveRoom = async () => {
@@ -87,7 +91,6 @@ function Connect4() {
 			alert("Error leaving room: " + err);
 		}
 	};
-
 
 	useEffect(() => {
 		if (!roomCode) return;
@@ -115,6 +118,12 @@ function Connect4() {
 			setCurrentPlayer(data.currentTurn);
 			setWinner(data.winner ?? null);
 
+			setWinningCells(
+				Array.isArray(data.winningCells)
+					? data.winningCells.map(({ row, col }: { row: number; col: number }) => [row, col] as [number, number])
+					: []
+			);
+			
 			if (data.players && typeof data.players === "object") {
 				const player: { [key: number]: { name: string; uid: string } } = {};
 				for (const [key, value] of Object.entries(data.players)) {
@@ -129,10 +138,10 @@ function Connect4() {
 
 		return () => unsubscribe();
 	}, [roomCode]);
-
 	
 	useEffect(() => {
 		if (winner === null) return;
+		if(winner !== null) setLastMove(null)
 		if (Object.keys(players).length < 2) return;
 
 		const auth = getAuth();
@@ -145,7 +154,6 @@ function Connect4() {
 		} else {
 			playSound("lose.mp3");
 		}
-
 	}, [winner, players]);
 
 	return (
@@ -155,23 +163,24 @@ function Connect4() {
 				style="text-7xl font-extrabold text-[#014210]"
 			/>
 			<div className="flex items-center justify-center gap-20">
-			<Title
-				title={`Room Code - ${roomCode}`}
-				style="text-5xl font-bold text-[#707]"
+				<Title
+					title={`Room Code - ${roomCode}`}
+					style="text-5xl font-bold text-[#707]"
 				/>
 				<Buttons
-				type="submit"
-				text="Leave Room"
-				onClick={handleLeaveRoom}
-				style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
-			/>
-				</div>
+					type="submit"
+					text="Leave Room"
+					onClick={handleLeaveRoom}
+					style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
+				/>
+			</div>
 			<div className="flex flex-col md:flex-row items-center justify-center gap-40 py-0 px-10 w-4/5">
 				<GameBoard
 					players={players}
 					board={board}
 					onCellClick={handleCellClick}
 					winner={winner}
+					winningCells={winningCells}
 					currentPlayer={currentPlayer}
 					lastMove={lastMove}
 				/>
@@ -185,8 +194,6 @@ function Connect4() {
 					board={board}
 				/>
 			</div>
-			
-			
 		</div>
 	);
 }

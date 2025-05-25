@@ -10,6 +10,7 @@ interface CellProps {
 	onTouchEnd: () => void;
 	disabled: boolean;
 	animateDrop?: boolean;
+    isWinningCell?: boolean;
 }
 
 function Cells({
@@ -21,12 +22,15 @@ function Cells({
 	onTouchEnd,
 	disabled,
 	animateDrop,
+    isWinningCell
 }: CellProps) {
 	return (
 		<div
-			className={`size-36 flex items-center justify-center rounded-md  ${
-				disabled ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
-			}`}
+			className={`size-36 flex items-center justify-center rounded-md  
+                ${
+				 disabled ? "cursor-not-allowed" : "cursor-pointer"
+			 }
+            `}
 			onClick={disabled ? undefined : onClick}
 			onMouseEnter={disabled ? undefined : onMouseEnter}
 			onMouseLeave={disabled ? undefined : onMouseLeave}
@@ -37,6 +41,7 @@ function Cells({
 				coinColour={value === 0 ? "gold" : value === 1 ? "silver" : "empty"}
 				coinSize="size-32"
 				shouldAnimate={animateDrop}
+                isWinning={isWinningCell}
 			/>
 		</div>
 	);

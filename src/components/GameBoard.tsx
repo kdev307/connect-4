@@ -10,6 +10,7 @@ interface GameBoardProps {
 	board: Board | null;
 	onCellClick: (columnIndex: number) => void;
 	winner: Winner;
+  winningCells: [number, number][];
 	currentPlayer: Player;
   lastMove: {row: number, col: number} | null;
 }
@@ -21,12 +22,14 @@ function GameBoard({
 	winner,
 	currentPlayer,
   lastMove,
+  winningCells
 }: GameBoardProps) {
 	const [hoverColumn, setHoverColumn] = useState<number | null>(null);
 	if (!board) return <h3>Unable to load the board</h3>;
 
 	const auth = getAuth();
 	const currentUserUid = auth.currentUser?.uid;
+
 	return (
 		<div className="flex flex-col items-center justify-center">
 			<div className="flex gap-5 mb-4">
@@ -35,7 +38,7 @@ function GameBoard({
 						key={colIndex}
 						className="size-36 opacity-75 flex items-center justify-center"
 					>
-						{hoverColumn === colIndex &&
+						{winner === null && hoverColumn === colIndex &&
 							players[currentPlayer]?.uid === currentUserUid && (
 								<Coin
 									coinColour={currentPlayer === 0 ? "gold" : "silver"}
@@ -62,7 +65,10 @@ function GameBoard({
 								onTouchStart={() => setHoverColumn(columnIndex)}
 								onTouchEnd={() => setHoverColumn(null)}
 								disabled={winner !== null}
-                animateDrop={lastMove?.row === rowIndex && lastMove?.col === columnIndex}
+                animateDrop={winner === null && lastMove?.row === rowIndex && lastMove?.col === columnIndex}
+                isWinningCell={
+                  winningCells.some(([r, c]) => r === rowIndex && c === columnIndex)
+                }
 
 							/>
 						))}

@@ -19,10 +19,10 @@ export async function createRoom(playerName: string): Promise<string> {
 		let exists = true;
 
 		const auth = getAuth();
-	if (!auth.currentUser) {
-		await signInAnonymously(auth);
-	}
-	const uid = auth.currentUser?.uid;
+		if (!auth.currentUser) {
+			await signInAnonymously(auth);
+		}
+		const uid = auth.currentUser?.uid;
 
 		for (let i = 0; i < 5; i++) {
 			const roomRef = doc(db, "rooms", roomCode);
@@ -35,7 +35,7 @@ export async function createRoom(playerName: string): Promise<string> {
 						.fill(null)
 						.map(() => Array(COLUMNS).fill(null))
 						.flat(),
-					players: {0:{ name:playerName, uid }},
+					players: { 0: { name: playerName, uid } },
 					currentTurn: 0,
 					winner: null,
 					status: "waiting",
@@ -86,7 +86,7 @@ export async function joinRoom(
 	}
 
 	const playerIndex = players["0"] ? 1 : 0;
-	players[playerIndex] = { name: playerName, uid };;
+	players[playerIndex] = { name: playerName, uid };
 
 	await updateDoc(roomRef, {
 		players,
@@ -163,7 +163,10 @@ export async function playMove(
 	board[rowToPlace][column] = player;
 
 	let newWinner: Winner = null;
-	if (isWinner(board, rowToPlace, column, player)) {
+	let winningCoords: [number, number][] | null = null;
+
+	winningCoords = isWinner(board, rowToPlace, column, player);
+	if (winningCoords) {
 		newWinner = player;
 	} else if (board.every((row) => row.every((cell) => cell !== null))) {
 		newWinner = -1;
@@ -175,25 +178,27 @@ export async function playMove(
 		board: updatedFlatBoard,
 		currentTurn: newWinner === null ? (player === 0 ? 1 : 0) : currentTurn,
 		winner: newWinner,
+		winningCells: winningCoords?.map(([r, c]) => ({ row: r, col: c })) ?? [],
 		updatedAt: Timestamp.now(),
-		status:(newWinner!== null && newWinner!== -1) ? "finished" : "playing",
+		status: newWinner !== null && newWinner !== -1 ? "finished" : "playing",
 	};
-	
+
 	await updateDoc(roomRef, updateData);
 }
 
 export async function resetGame(roomCode: string): Promise<void> {
 	const roomRef = doc(db, "rooms", roomCode);
 	const emptyBoard: Board = Array(ROWS)
-	.fill(null)
-	.map(() => Array(COLUMNS).fill(null))
-	.flat();
-	
+		.fill(null)
+		.map(() => Array(COLUMNS).fill(null))
+		.flat();
+
 	await updateDoc(roomRef, {
 		board: emptyBoard,
 		currentTurn: 0,
 		winner: null,
-		status:"playing",
+		winningCells:[],
+		status: "playing",
 		updatedAt: Timestamp.now(),
 	});
 }

@@ -33,9 +33,14 @@ function Info({
 
 	useEffect(() => {
 		if (winner !== null) {
-			setShowResult(true);
+			const timeoutId = setTimeout(() => {
+				setShowResult(true);
+			}, 2500);
+	
+			return () => clearTimeout(timeoutId);
 		}
 	}, [winner]);
+	
 
 	const handleCloseResult = () => {
 		setShowResult(false);
@@ -93,7 +98,7 @@ function Info({
 					style={`${
 						!gameHasStarted
 							? "text-gray-600 border-gray-600 cursor-not-allowed hover:bg-gray-600"
-							: "text-[#560000] border-[#560000] hover:bg-[#560000]"
+							: "text-[#560000] border-[#560000] hover:bg-[#560000] cursor-pointer"
 					}`}
 				/>
 				{/* <Buttons text="Customize Game" onClick={onToggleInputModal} style="text-[#010e42] border-[#010e42] hover:bg-[#010e42] "/> */}
