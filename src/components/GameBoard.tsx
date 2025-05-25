@@ -1,33 +1,72 @@
-import { Board, Winner } from "../types"
-import Cells from "./Cells"
+import { useState } from "react";
+import { Board, Player, Winner } from "../types";
+import Cells from "./Cells";
+import { COLUMNS } from "../constants";
+import Coin from "./Coin";
+import { getAuth } from "firebase/auth";
 
-interface GameBoardProps{
-  board: Board | null,
-  onCellClick: (columnIndex: number)=> void
-  winner: Winner;
+interface GameBoardProps {
+	players: { [key: number]: { name: string; uid: string } };
+	board: Board | null;
+	onCellClick: (columnIndex: number) => void;
+	winner: Winner;
+	currentPlayer: Player;
 }
 
-function GameBoard({board, onCellClick, winner}: GameBoardProps) {
-  if(!board)
-      return <h3>Unable to load the board</h3>
-  return (
-    <div className="w-fit mx-auto p-10 bg-[#f6f5d0] flex flex-col gap-10 items-center justify-center border-2 rounded-xl">
-      {board.map((row, rowIndex)=>(
-        <div key={rowIndex} className="flex items-center justify-center gap-10">
-          {row.map((cell, columnIndex)=>(
-            <Cells
-            key={columnIndex}
-            value={cell}
-            onClick={() => onCellClick(columnIndex)}
-            disabled={winner !== null}
+function GameBoard({
+	players,
+	board,
+	onCellClick,
+	winner,
+	currentPlayer,
+}: GameBoardProps) {
+	const [hoverColumn, setHoverColumn] = useState<number | null>(null);
+	if (!board) return <h3>Unable to load the board</h3>;
 
-          />
+	const auth = getAuth();
+	const currentUserUid = auth.currentUser?.uid;
+	return (
+		<div className="flex flex-col items-center justify-center">
+			<div className="flex gap-10 mb-4">
+				{Array.from({ length: COLUMNS }).map((_, colIndex) => (
+					<div
+						key={colIndex}
+						className="size-40 opacity-75 flex items-center justify-center"
+					>
+						{hoverColumn === colIndex &&
+							players[currentPlayer]?.uid === currentUserUid && (
+								<Coin
+									coinColour={currentPlayer === 0 ? "red" : "blue"}
+									coinSize="size-36"
+								/>
+							)}
+					</div>
+				))}
+			</div>
 
-          ))}
-        </div>
-      ))}
-    </div>
-  )
+			<div className="w-fit mx-auto p-10 bg-[#62422e] flex flex-col gap-10 items-center justify-center border-2 rounded-xl">
+				{board.map((row, rowIndex) => (
+					<div
+						key={rowIndex}
+						className="flex items-center justify-center gap-10"
+					>
+						{row.map((cell, columnIndex) => (
+							<Cells
+								key={columnIndex}
+								value={cell}
+								onClick={() => onCellClick(columnIndex)}
+								onMouseEnter={() => setHoverColumn(columnIndex)}
+								onMouseLeave={() => setHoverColumn(null)}
+								onTouchStart={() => setHoverColumn(columnIndex)}
+								onTouchEnd={() => setHoverColumn(null)}
+								disabled={winner !== null}
+							/>
+						))}
+					</div>
+				))}
+			</div>
+		</div>
+	);
 }
 
-export default GameBoard
+export default GameBoard;

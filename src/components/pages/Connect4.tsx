@@ -152,11 +152,13 @@ function Connect4() {
 				onClick={handleLeaveRoom}
 				style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
 			/>
-			<div className="flex flex-col md:flex-row items-center justify-center mt-10 gap-60">
+			<div className="flex flex-col md:flex-row items-center justify-center gap-20 py-0 px-10">
 				<GameBoard
+					players={players}
 					board={board}
 					onCellClick={handleCellClick}
 					winner={winner}
+					currentPlayer={currentPlayer}
 				/>
 				<Info
 					players={players}

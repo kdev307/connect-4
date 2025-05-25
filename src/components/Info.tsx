@@ -50,8 +50,8 @@ function Info({
 			<div className="mx-auto p-4 flex flex-col items-center justify-center gap-10">
 				<h2
 					className={`text-4xl text-center font-bold 
-		${currentPlayer === 0 ? "text-red-700" : "text-blue-700"} ${
-						winner !== null || Object.keys(players).length < 2 && "!text-purple-700"
+		${currentPlayer === 0 ? "text-[#ffd700]" : "text-[#c0c0c0]"} ${
+						winner !== null || Object.keys(players).length < 2 && "!text-purple-600"
 					}`}
 				>
 					{Object.keys(players).length < 2
@@ -76,10 +76,10 @@ function Info({
 						}
 						messageStyle={
 							winner && winner === -1
-								? "text-purple-700"
+								? "text-purple-600"
 								: winner === 0
-								? "text-red-700"
-								: "text-blue-700"
+								? "text-[#ffd700]"
+								: "text-[#c0c0c0]"
 						}
 						onClose={handleCloseResult}
 					/>
