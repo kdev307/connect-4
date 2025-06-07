@@ -39,7 +39,7 @@ function Cells({
 		>
 			<Coin
 				coinColour={value === 0 ? "red" : value === 1 ? "blue" : "empty"}
-				coinSize="size-32"
+				coinSize="size-20 md:size-32"
 				shouldAnimate={animateDrop}
                 isWinning={isWinningCell}
 			/>

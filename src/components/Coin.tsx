@@ -9,8 +9,9 @@ interface CoinProps {
 
 const springDrop = {
 	type: "spring",
-	stiffness: 80,
-	damping: 15,
+	stiffness: 100,
+	damping:18,
+	mass:1.5,
 };
 
 function Coin({ coinColour, coinSize, shouldAnimate, isWinning }: CoinProps) {
@@ -44,7 +45,7 @@ function Coin({ coinColour, coinSize, shouldAnimate, isWinning }: CoinProps) {
 				key={`${coinColour}-${shouldAnimate ? "drop" : "static"}-${
 					isWinning ? "win" : ""
 				}`}
-				initial={shouldAnimate ? { y: -650, opacity: 1 } : false}
+				initial={shouldAnimate ? { y: -600, opacity: 1 } : false}
 				animate={combinedAnimation}
 				transition={combinedTransition}
 				className={`size-full rounded-full ${getCoinColorClass()} ${

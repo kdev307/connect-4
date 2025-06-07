@@ -13,7 +13,6 @@ function JoinRoom() {
 		e.preventDefault();
 		try {
 			await joinRoom(roomCode, name.trim());
-			sessionStorage.setItem("playerName", name.trim());
 			navigate(`/room/${roomCode.trim().toUpperCase()}`);
 		} catch (error) {
 			console.error(error);

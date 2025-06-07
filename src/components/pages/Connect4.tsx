@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameBoard from "../GameBoard";
 import Title from "../Title";
 import Info from "../Info";
 import { Board, Player, Winner } from "../../types";
-import { playDrawSound, playDropSound, playLoseSound, playWinSound, stopEndGameSound} from "../../utils/sounds";
+import {
+	playDrawSound,
+	playDropSound,
+	playLoseSound,
+	playWinSound,
+	stopEndGameSound,
+} from "../../utils/sounds";
 import { useNavigate, useParams } from "react-router";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
@@ -63,7 +69,7 @@ function Connect4() {
 			await playMove(roomCode, column, currentPlayer);
 			setLastMove({ row: targetRow, col: column });
 			// playSound("drop.mp3");
-			playDropSound()
+			playDropSound();
 		} catch (error) {
 			console.error("Failed to play move:", error);
 			alert(error);
@@ -75,7 +81,7 @@ function Connect4() {
 		try {
 			await resetGame(roomCode);
 			// stopSound();
-			stopEndGameSound()
+			stopEndGameSound();
 		} catch (err) {
 			console.error("Reset failed:", err);
 		}
@@ -89,13 +95,18 @@ function Connect4() {
 		if (!roomCode) return;
 		try {
 			// stopSound();
-			stopEndGameSound()
+			stopEndGameSound();
 			await leaveRoom(roomCode, currentUid);
+			handleResetGame();
 			navigate("/");
 		} catch (err) {
 			alert("Error leaving room: " + err);
 		}
 	};
+
+	const previousPlayersRef = useRef<{
+		[key: number]: { name: string; uid: string };
+	}>({});
 
 	useEffect(() => {
 		if (!roomCode) return;
@@ -125,28 +136,47 @@ function Connect4() {
 
 			setWinningCells(
 				Array.isArray(data.winningCells)
-					? data.winningCells.map(({ row, col }: { row: number; col: number }) => [row, col] as [number, number])
+					? data.winningCells.map(
+							({ row, col }: { row: number; col: number }) =>
+								[row, col] as [number, number]
+					  )
 					: []
 			);
-			
-			if (data.players && typeof data.players === "object") {
-				const player: { [key: number]: { name: string; uid: string } } = {};
-				for (const [key, value] of Object.entries(data.players)) {
-					const playerData = value as { name: string; uid: string };
-					if (playerData.name && playerData.uid) {
-						player[parseInt(key)] = playerData;
-					}
+
+
+			const newPlayers: { [key: number]: { name: string; uid: string } } = {};
+			for (const [key, value] of Object.entries(data.players || {})) {
+				const playerData = value as { name: string; uid: string };
+				if (playerData.name && playerData.uid) {
+					newPlayers[parseInt(key)] = playerData;
 				}
-				setPlayers(player);
 			}
+
+			const prevPlayers = previousPlayersRef.current;
+			const currentUids = Object.values(newPlayers).map((p) => p.uid);
+
+			const auth = getAuth();
+			const currentUid = auth.currentUser?.uid;
+
+			const leaver = Object.values(prevPlayers).find(
+				(p) => !currentUids.includes(p.uid)
+			);
+
+			if (leaver && leaver.uid !== currentUid) {
+				alert(`${leaver.name} has left the room`);
+			}
+
+			// Update
+			previousPlayersRef.current = newPlayers;
+			setPlayers(newPlayers);
 		});
 
 		return () => unsubscribe();
 	}, [roomCode]);
-	
+
 	useEffect(() => {
 		if (winner === null) return;
-		if(winner !== null) setLastMove(null)
+		if (winner !== null) setLastMove(null);
 		if (Object.keys(players).length < 2) return;
 
 		const auth = getAuth();
@@ -154,13 +184,13 @@ function Connect4() {
 
 		if (winner === -1) {
 			// playSound("draw.mp3");
-			playDrawSound()
+			playDrawSound();
 		} else if (players[winner]?.uid === currentUid) {
 			// playSound("win.mp3");
 			playWinSound();
 		} else {
 			// playSound("lose.mp3");
-			playLoseSound()
+			playLoseSound();
 		}
 	}, [winner, players]);
 
@@ -182,7 +212,7 @@ function Connect4() {
 					style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
 				/>
 			</div>
-			<div className="flex flex-col md:flex-row items-center justify-center gap-40 py-0 px-10 w-4/5">
+			<div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-40 py-0 px-10 w-4/5">
 				<GameBoard
 					players={players}
 					board={board}

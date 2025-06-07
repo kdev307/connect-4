@@ -6,6 +6,10 @@
 	}
 }
 
+#root {
+    margin: auto;
+}
+
 body {
 	background: linear-gradient(90deg, #ff7171,#fff, #7888ff);
 

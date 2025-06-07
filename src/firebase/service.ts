@@ -11,7 +11,7 @@ import {
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { isWinner } from "../utils/isWinner";
 import { Board, Cell, Player, Winner } from "../types";
-import { COLUMNS, ROWS } from "../constants";
+import { COLUMNS, ROWS, STATUSES } from "../constants";
 
 export async function createRoom(playerName: string): Promise<string> {
 	try {
@@ -38,7 +38,7 @@ export async function createRoom(playerName: string): Promise<string> {
 					players: { 0: { name: playerName, uid } },
 					currentTurn: 0,
 					winner: null,
-					status: "waiting",
+					status: STATUSES.WAITING,
 					createdAt: new Date().toISOString(),
 				});
 				break;
@@ -90,7 +90,7 @@ export async function joinRoom(
 
 	await updateDoc(roomRef, {
 		players,
-		status: "playing",
+		status: STATUSES.PLAYING,
 	});
 }
 export async function leaveRoom(roomCode: string, playerID: string | undefined): Promise<void> {
@@ -122,7 +122,7 @@ export async function leaveRoom(roomCode: string, playerID: string | undefined):
 		} else {
 			await updateDoc(roomRef, {
 				players,
-				status: "waiting",
+				status: STATUSES.WAITING,
 			});
 		}
 	} catch (err) {
@@ -184,7 +184,7 @@ export async function playMove(
 		winner: newWinner,
 		winningCells: winningCoords?.map(([r, c]) => ({ row: r, col: c })) ?? [],
 		updatedAt: Timestamp.now(),
-		status: newWinner !== null && newWinner !== -1 ? "finished" : "playing",
+		status: newWinner !== null && newWinner !== -1 ? STATUSES.FINISHED : STATUSES.PLAYING,
 	};
 
 	await updateDoc(roomRef, updateData);
@@ -202,7 +202,7 @@ export async function resetGame(roomCode: string): Promise<void> {
 		currentTurn: 0,
 		winner: null,
 		winningCells:[],
-		status: "playing",
+		status: STATUSES.PLAYING,
 		updatedAt: Timestamp.now(),
 	});
 }
