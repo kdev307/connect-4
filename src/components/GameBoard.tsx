@@ -111,10 +111,68 @@ function GameBoard({
                     </div>
                 ))}
             </div>
-            {/* <div className="flex justify-between w-full px-8 mt-4">
-				<div className="w-6 h-16 bg-[#1e1e1e] rounded-t-sm shadow-inner shadow-black/40" />
-				<div className="w-6 h-16 bg-[#1e1e1e] rounded-t-sm shadow-inner shadow-black/40" />
-			</div> */}
+            {/* <!-- Legs --> */}
+            <div className="flex justify-between items-center gap-[45rem] mx-auto px-8 relative z-0">
+                {/* <!-- Left Leg --> */}
+                <div className="flex flex-col items-center relative -ml-[36rem]">
+                    {/* <!-- Front leg --> */}
+                    <div
+                        className="relative z-10 w-8 h-[4.5rem] bg-[#444] rounded-t-sm shadow-inner 
+                  [transform:skewX(-25deg)] origin-bottom-left
+                  before:content-[''] before:absolute before:bottom-[-1rem] before:left-0 before:w-full before:h-4 
+                  before:bg-[#222] before:shadow-md before:[transform:skewX(30deg)] before:origin-top-left"
+                    ></div>
+
+                    {/* <!-- Strap --> */}
+                    <div
+                        className="absolute top-[4rem] left-8 w-[2.35rem] h-[1.45rem] bg-[#222] z-10 
+                  [transform:skewX(-70deg)_rotateY(30deg)]"
+                    ></div>
+
+                    {/* <!-- Back leg --> */}
+                    <div
+                        className="relative mt-[-4.5rem] w-8 h-12 bg-[#222] rounded-t-sm shadow-inner mr-[-8rem] 
+                  [transform:skewX(25deg)] origin-bottom-right
+                  before:content-[''] before:absolute before:bottom-[-1rem] before:left-0 before:w-full before:h-4 
+                  before:bg-[#333] before:shadow-md before:z-10 before:[transform:skewX(-20deg)] before:origin-top-right"
+                    ></div>
+                </div>
+
+                {/* <!-- Right Leg --> */}
+                <div className="flex flex-col items-center relative -mr-[32rem]">
+                    {/* <!-- Front leg --> */}
+                    <div
+                        className="relative z-10 w-8 h-[4.5rem] bg-[#444] rounded-t-sm shadow-inner 
+                  [transform:skewX(-25deg)] origin-bottom-left
+                  before:content-[''] before:absolute before:bottom-[-1rem] before:left-0 before:w-full before:h-4 
+                  before:bg-[#222] before:shadow-md before:[transform:skewX(30deg)] before:origin-top-left"
+                    ></div>
+
+                    {/* <!-- Strap --> */}
+                    <div
+                        className="absolute top-[4rem] left-8 w-[2.35rem] h-[1.45rem] bg-[#222] z-10 
+                  [transform:skewX(-70deg)_rotateY(30deg)]"
+                    ></div>
+
+                    {/* <!-- Back leg --> */}
+                    <div
+                        className="relative mt-[-4.5rem] w-8 h-12 bg-[#222] rounded-t-sm shadow-inner mr-[-8rem] 
+                  [transform:skewX(25deg)] origin-bottom-right
+                  before:content-[''] before:absolute before:bottom-[-1rem] before:left-0 before:w-full before:h-4 
+                  before:bg-[#333] before:shadow-md before:z-10 before:[transform:skewX(-20deg)] before:origin-top-right"
+                    ></div>
+                </div>
+            </div>
+
+            {/* <!-- Base --> */}
+            <div
+                className="w-[90rem] h-80 bg-[#BC8F8F] mt-[-10rem] shadow-[0_8px_12px_rgba(0,0,0,0.5),inset_0_3px_6px_rgba(255,255,255,0.07)] rounded-sm -z-10 
+                [transform:skewX(-40deg)]
+                before:content-[''] before:absolute before:bottom-[-2.4rem] before:left-[1rem] before:w-full 
+                before:h-[2.8rem] before:bg-[#a98181] before:[transform:skewX(40deg)]
+                after:content-[''] after:absolute after:top-[1.5rem] after:left-full after:w-[2.4rem] after:h-[98.6%] 
+                after:bg-[#846464] after:[transform:skewY(50deg)]"
+            ></div>
         </div>
     );
 }
