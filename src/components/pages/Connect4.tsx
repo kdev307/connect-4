@@ -3,7 +3,7 @@ import GameBoard from "../GameBoard";
 import Title from "../Title";
 import Info from "../Info";
 import { Board, Player, Winner } from "../../types";
-import { playSound, stopSound } from "../../utils/sounds";
+import { playDrawSound, playDropSound, playLoseSound, playWinSound, stopEndGameSound} from "../../utils/sounds";
 import { useNavigate, useParams } from "react-router";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
@@ -62,7 +62,8 @@ function Connect4() {
 			}
 			await playMove(roomCode, column, currentPlayer);
 			setLastMove({ row: targetRow, col: column });
-			playSound("drop.mp3");
+			// playSound("drop.mp3");
+			playDropSound()
 		} catch (error) {
 			console.error("Failed to play move:", error);
 			alert(error);
@@ -73,7 +74,8 @@ function Connect4() {
 		if (!roomCode) return;
 		try {
 			await resetGame(roomCode);
-			stopSound();
+			// stopSound();
+			stopEndGameSound()
 		} catch (err) {
 			console.error("Reset failed:", err);
 		}
@@ -86,7 +88,8 @@ function Connect4() {
 		const currentUid = auth.currentUser?.uid;
 		if (!roomCode) return;
 		try {
-			stopSound();
+			// stopSound();
+			stopEndGameSound()
 			await leaveRoom(roomCode, currentUid);
 			navigate("/");
 		} catch (err) {
@@ -150,11 +153,14 @@ function Connect4() {
 		const currentUid = auth.currentUser?.uid;
 
 		if (winner === -1) {
-			playSound("draw.mp3");
+			// playSound("draw.mp3");
+			playDrawSound()
 		} else if (players[winner]?.uid === currentUid) {
-			playSound("win.mp3");
+			// playSound("win.mp3");
+			playWinSound();
 		} else {
-			playSound("lose.mp3");
+			// playSound("lose.mp3");
+			playLoseSound()
 		}
 	}, [winner, players]);
 

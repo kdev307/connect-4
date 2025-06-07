@@ -4,7 +4,7 @@ import Buttons from "./Buttons";
 // import InputModal from "./InputModal";
 import PlayerInfo from "./PlayerInfo";
 import Result from "./Result";
-import { stopSound } from "../utils/sounds";
+import { stopEndGameSound } from "../utils/sounds";
 import { getAuth } from "firebase/auth";
 
 interface InfoProps {
@@ -35,7 +35,7 @@ function Info({
 		if (winner !== null) {
 			const timeoutId = setTimeout(() => {
 				setShowResult(true);
-			}, 2500);
+			}, 1000);
 	
 			return () => clearTimeout(timeoutId);
 		}
@@ -44,7 +44,7 @@ function Info({
 
 	const handleCloseResult = () => {
 		setShowResult(false);
-		stopSound();
+		stopEndGameSound();
 	};
 
 	if (!board) return <h3>Unable to load the board</h3>;

@@ -93,7 +93,7 @@ export async function joinRoom(
 		status: "playing",
 	});
 }
-	export async function leaveRoom(roomCode: string, playerID: string | undefined): Promise<void> {
+export async function leaveRoom(roomCode: string, playerID: string | undefined): Promise<void> {
 	const normalizedCode = roomCode.trim().toUpperCase();
 	console.log("Leaving room:", normalizedCode, "Player:", playerID);
 	
