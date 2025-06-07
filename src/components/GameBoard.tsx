@@ -49,7 +49,7 @@ function GameBoard({
 				))}
 			</div>
 
-			<div className="w-fit mx-auto p-10 bg-[#62422e] flex flex-col gap-5 items-center justify-center border-2 rounded-xl">
+			<div className="w-fit mx-auto p-10 bg-[#2C2C2C] flex flex-col gap-5 items-center justify-center border-2 rounded-xl">
 				{board.map((row, rowIndex) => (
 					<div
 						key={rowIndex}

@@ -11,8 +11,14 @@ body {
 	/* background: linear-gradient(90deg, #ff4081, #3f51b5, #9c27b0, #00bcd4); */
 	/* background: linear-gradient(90deg, #00bcd4, #3e8e41, #6a1b9a, #4caf50); */
 	/* background: linear-gradient(90deg, #8e2de2, #4a00e0, #ff4b5c, #ff7f50); */
+	/* background: linear-gradient(90deg, #0f0c29, #302b63, #24243e); */
+	/* background: linear-gradient(90deg, #0f2027, #203a43, #2c5364); */
+	/* background: linear-gradient(90deg, #1e130c, #9a8478, #f2c94c); */
+	/* background: linear-gradient(90deg, #1a0023, #3a0ca3, #7209b7); */
+	/* background: linear-gradient(90deg, #333, #555, #aaa, #333); */
+
 	background-size: 400% 400%;
-	animation: gradientMove 7.5s ease infinite;
+	animation: gradientMove 7s ease infinite;
 }
 
 @keyframes gradientMove {
@@ -53,21 +59,6 @@ body {
 	animation: shine 3s infinite linear;
 }
 
-/* @keyframes goldShine {
-	0% {
-		background-position: 0% 50%;
-		box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-	}
-	50% {
-		background-position: 100% 50%;
-		box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
-	}
-	100% {
-		background-position: 0% 50%;
-		box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-	}
-} */
-
 @keyframes shine {
 	0% {
 		background-position: 200% 0;
@@ -77,29 +68,3 @@ body {
 	}
 }
 
-/*@keyframes goldShine {
-    /* 0%, 100% {
-        filter: brightness(1);
-      }
-      50% {
-        filter: brightness(1.2);
-        } }*/
-
-/* @keyframes silverShine {
-	0%,
-	100% {
-		background: radial-gradient(circle at 30% 30%, #c0c0c0);
-		box-shadow: 0 0 15px rgba(221, 221, 220, 0.5);
-        }
-        50% {
-            background: radial-gradient(circle at 30% 30%, #f0f0f0);
-            box-shadow: 0 0 25px rgba(136, 136, 135, 0.8);
-} }*/
-/* @keyframes silverShine {
-	/* 0%, 100% {
-        filter: brightness(1);
-      }
-      50% {
-        filter: brightness(1.2);
-    }
-    } */
