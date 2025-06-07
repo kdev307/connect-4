@@ -10,13 +10,14 @@ import {
     playWinSound,
     stopEndGameSound,
 } from "../../utils/sounds";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { leaveRoom, playMove, resetGame } from "../../firebase/service";
 import Buttons from "../Buttons";
 import { COLUMNS, ROWS } from "../../constants";
 import { getAuth } from "firebase/auth";
+import ToolTip from "../ToolTip";
 
 function Connect4() {
     const [board, setBoard] = useState<Board | null>(null);
@@ -197,21 +198,28 @@ function Connect4() {
 
     return (
         <div className="m-auto p-4 flex flex-col items-center justify-center gap-4">
-            <Title
-                title="Play Connect 4"
-                style="text-7xl font-extrabold text-[#014210]"
-            />
+            <Link to="/">
+                <Title
+                    title="Play Connect 4"
+                    style="text-7xl font-extrabold text-[#014210]"
+                />
+            </Link>
             <div className="flex items-center justify-center gap-20">
                 <Title
                     title={`Room Code - ${roomCode}`}
                     style="text-5xl font-bold text-[#707]"
                 />
-                <Buttons
-                    type="submit"
-                    text="Leave Room"
-                    onClick={handleLeaveRoom}
-                    style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
-                />
+                <ToolTip
+                    text="Leave the room and return to the home page."
+                    direction="right"
+                >
+                    <Buttons
+                        type="submit"
+                        text="Leave Room"
+                        onClick={handleLeaveRoom}
+                        style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
+                    />
+                </ToolTip>
             </div>
             <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-4 lg:gap-40 py-0 px-10 w-full">
                 <GameBoard
