@@ -18,7 +18,7 @@ function PlayerInfo({players, currentPlayer }: PlayerInfoProps) {
                     const isCurrentPlayer = currentPlayer === index;
                     const playerBackgroundColor = 
                         isCurrentPlayer
-                            ? (index === 0 ? "bg-yellow-200" : "bg-gray-200")
+                            ? (index === 0 ? "bg-red-200" : "bg-blue-200")
                             : "";
 
                     return (
@@ -26,7 +26,7 @@ function PlayerInfo({players, currentPlayer }: PlayerInfoProps) {
                             key={key}
                             className={`flex items-center space-x-3 ${playerBackgroundColor} py-2 px-4 rounded-full`}
                         >
-                            <Coin coinColour={index === 0 ? "gold" : "silver"} coinSize="size-20" />
+                            <Coin coinColour={index === 0 ? "red" : "blue"} coinSize="size-20" />
                             <span className={`text-xl ${isCurrentPlayer ? "font-bold" : ""}`}>
                                 {player.name}
                             </span>

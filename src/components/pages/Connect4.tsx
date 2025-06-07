@@ -82,10 +82,12 @@ function Connect4() {
 	};
 
 	const handleLeaveRoom = async () => {
+		const auth = getAuth();
+		const currentUid = auth.currentUser?.uid;
 		if (!roomCode) return;
 		try {
 			stopSound();
-			await leaveRoom(roomCode, "YourPlayerName");
+			await leaveRoom(roomCode, currentUid);
 			navigate("/");
 		} catch (err) {
 			alert("Error leaving room: " + err);

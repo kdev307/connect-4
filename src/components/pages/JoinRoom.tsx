@@ -36,7 +36,7 @@ function JoinRoom() {
 					</label>
 					<input
 						type="text"
-						className="w-full p-4 text-xl box-border border rounded-md border-[#222] text-[#000] placeholder:text-[#666] placeholder:text-xl placeholder-opacity-50 bg-[#fff]"
+						className="w-full p-4 text-xl box-border border rounded-full border-[#222] text-[#000] placeholder:text-[#666] placeholder:text-xl placeholder-opacity-50 bg-[#fff]"
 						name="name"
 						id="name"
 						placeholder="Enter your name"
@@ -53,7 +53,7 @@ function JoinRoom() {
 					</label>
 					<input
 						type="text"
-						className="w-full p-4 text-xl box-border border rounded-md border-[#222] text-[#000] placeholder:text-[#666] placeholder:text-xl placeholder-opacity-50 bg-[#fff]"
+						className="w-full p-4 text-xl box-border border rounded-full border-[#222] text-[#000] placeholder:text-[#666] placeholder:text-xl placeholder-opacity-50 bg-[#fff]"
 						name="roomCode"
 						id="roomCode"
 						placeholder="Enter Room Code"
@@ -69,7 +69,12 @@ function JoinRoom() {
 				/>
 			</form>
 			<Link to="/">
-				<Title title="Go Back" style="text-xl font-semibold text-[#ff0010]" />
+				<Buttons
+                    type="button"
+					text="Go Back"
+					// onClick={handleSubmit}
+					style="mt-4 text-2xl text-[#62422e] border-[#62422e] hover:bg-[#62422e] w-full"
+				/>
 			</Link>
 		</div>
 	);

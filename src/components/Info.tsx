@@ -54,7 +54,7 @@ function Info({
 			<div className="mx-auto p-4 flex flex-col items-center justify-center gap-10">
 				<h2
 					className={`text-4xl text-center font-bold 
-		${currentPlayer === 0 ? "text-[#ffd700]" : "text-[#c0c0c0]"} ${
+		${currentPlayer === 0 ? "text-[#f00]" : "text-[#00f]"} ${
 						winner !== null || Object.keys(players).length < 2 && "!text-purple-600"
 					}`}
 				>
@@ -82,8 +82,8 @@ function Info({
 							winner && winner === -1
 								? "text-purple-600"
 								: winner === 0
-								? "text-[#ffd700]"
-								: "text-[#c0c0c0]"
+								? "text-[#f00]"
+								: "text-[#00f]"
 						}
 						onClose={handleCloseResult}
 					/>

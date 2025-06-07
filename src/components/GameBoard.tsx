@@ -41,7 +41,7 @@ function GameBoard({
 						{winner === null && hoverColumn === colIndex &&
 							players[currentPlayer]?.uid === currentUserUid && (
 								<Coin
-									coinColour={currentPlayer === 0 ? "gold" : "silver"}
+									coinColour={currentPlayer === 0 ? "red" : "blue"}
 									coinSize="size-32"
 								/>
 							)}

@@ -7,18 +7,10 @@
 }
 
 body {
-	/* background: linear-gradient(90deg, #6a5acd, #00bcd4, #ff7f50, #ff6347); */
-	/* background: linear-gradient(90deg, #ff4081, #3f51b5, #9c27b0, #00bcd4); */
-	/* background: linear-gradient(90deg, #00bcd4, #3e8e41, #6a1b9a, #4caf50); */
-	/* background: linear-gradient(90deg, #8e2de2, #4a00e0, #ff4b5c, #ff7f50); */
-	/* background: linear-gradient(90deg, #0f0c29, #302b63, #24243e); */
-	/* background: linear-gradient(90deg, #0f2027, #203a43, #2c5364); */
-	/* background: linear-gradient(90deg, #1e130c, #9a8478, #f2c94c); */
-	/* background: linear-gradient(90deg, #1a0023, #3a0ca3, #7209b7); */
-	/* background: linear-gradient(90deg, #333, #555, #aaa, #333); */
+	background: linear-gradient(90deg, #ff7171,#fff, #7888ff);
 
 	background-size: 400% 400%;
-	animation: gradientMove 7s ease infinite;
+	animation: gradientMove 7s linear infinite;
 }
 
 @keyframes gradientMove {
@@ -33,27 +25,27 @@ body {
 	}
 }
 
-.shine-gold {
+.shine-red {
 	background: linear-gradient(
 		45deg,
-		#ffd700 0%,
-		#ffd700 40%,
-		#ffffff 50%,
-		#ffd700 60%,
-		#ffd700 100%
+		#f00 0%,
+		#f00 40%,
+		#fff 50%,
+		#f00 60%,
+		#f00 100%
 	);
 	background-size: 300% 100%;
 	animation: shine 3s infinite linear;
 }
 
-.shine-silver {
+.shine-blue {
 	background: linear-gradient(
 		45deg,
-		#c0c0c0 0%,
-		#c0c0c0 40%,
-		#ffffff 50%,
-		#c0c0c0 60%,
-		#c0c0c0 100%
+		#00f 0%,
+		#00f 40%,
+		#fff 50%,
+		#00f 60%,
+		#00f 100%
 	);
 	background-size: 300% 100%;
 	animation: shine 3s infinite linear;

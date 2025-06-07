@@ -93,16 +93,15 @@ export async function joinRoom(
 		status: "playing",
 	});
 }
-
-export async function leaveRoom(
-	roomCode: string,
-	playerName: string
-): Promise<void> {
+	export async function leaveRoom(roomCode: string, playerID: string | undefined): Promise<void> {
 	const normalizedCode = roomCode.trim().toUpperCase();
+	console.log("Leaving room:", normalizedCode, "Player:", playerID);
+	
 	const roomRef = doc(db, "rooms", normalizedCode);
 	const roomSnap = await getDoc(roomRef);
 
 	if (!roomSnap.exists()) {
+		console.error("Room not found.");
 		throw new Error("Room not found.");
 	}
 
@@ -110,22 +109,27 @@ export async function leaveRoom(
 	const players = data.players || {};
 
 	for (const key in players) {
-		if (players[key] === playerName) {
+		if (players[key].uid === playerID) {
 			delete players[key];
 		}
 	}
 
 	const isEmpty = Object.keys(players).length === 0;
 
-	if (isEmpty) {
-		await deleteDoc(roomRef);
-	} else {
-		await updateDoc(roomRef, {
-			players,
-			status: "waiting",
-		});
+	try {
+		if (isEmpty) {
+			await deleteDoc(roomRef);
+		} else {
+			await updateDoc(roomRef, {
+				players,
+				status: "waiting",
+			});
+		}
+	} catch (err) {
+		console.error("Firestore update error:", err);
 	}
 }
+
 
 export async function playMove(
 	roomCode: string,

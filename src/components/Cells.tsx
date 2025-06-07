@@ -38,7 +38,7 @@ function Cells({
 			onTouchEnd={disabled ? undefined : onTouchEnd}
 		>
 			<Coin
-				coinColour={value === 0 ? "gold" : value === 1 ? "silver" : "empty"}
+				coinColour={value === 0 ? "red" : value === 1 ? "blue" : "empty"}
 				coinSize="size-32"
 				shouldAnimate={animateDrop}
                 isWinning={isWinningCell}
