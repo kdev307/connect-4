@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 import Buttons from "../Buttons";
 import Title from "../Title";
-import HowToPlay from "../HowToPlay";
 import ToolTip from "../ToolTip";
+import HomeInfo from "../HomeInfo";
 
 function Home() {
     return (
@@ -37,7 +37,7 @@ function Home() {
                     </ToolTip>
                 </Link>
             </div>
-            <HowToPlay />
+            <HomeInfo />
         </div>
     );
 }
