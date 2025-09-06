@@ -1,9 +1,10 @@
 import { useState } from "react";
 import Title from "../Title";
-import Buttons from "../Buttons";
+import Button from "../Buttons";
 import { Link, useNavigate } from "react-router";
 import { joinRoom } from "../../firebase/service";
 import ToolTip from "../ToolTip";
+import { ExitToApp, ArrowBack } from "@mui/icons-material";
 
 function JoinRoom() {
     const [name, setName] = useState<string>("");
@@ -68,19 +69,21 @@ function JoinRoom() {
                     text="Enter a room code and join your friend's game."
                     direction="right"
                 >
-                    <Buttons
+                    <Button
                         type="submit"
                         text="Join Room"
-                        style="text-2xl text-[#010e42] border-[#010e42] hover:bg-[#010e42] w-full"
+                        style="text-2xl text-[#010e42] border-[#010e42] hover:bg-[#010e42]"
+                        icon={<ExitToApp fontSize="large" />}
                     />
                 </ToolTip>
             </form>
             <Link to="/">
-                <Buttons
+                <Button
                     type="button"
                     text="Go Back"
                     // onClick={handleSubmit}
-                    style="mt-4 text-2xl text-[#62422e] border-[#62422e] hover:bg-[#62422e] w-full"
+                    style="mt-4 text-2xl text-[#62422e] border-[#62422e] hover:bg-[#62422e]"
+                    icon={<ArrowBack fontSize="large" />}
                 />
             </Link>
         </div>

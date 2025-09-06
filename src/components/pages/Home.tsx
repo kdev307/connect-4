@@ -1,8 +1,9 @@
 import { Link } from "react-router";
-import Buttons from "../Buttons";
+import Button from "../Buttons";
 import Title from "../Title";
 import ToolTip from "../ToolTip";
 import HomeInfo from "../HomeInfo";
+import { ExitToApp, DashboardCustomize } from "@mui/icons-material";
 
 function Home() {
     return (
@@ -17,10 +18,11 @@ function Home() {
                         text="Click to create a new game room and get a unique room code."
                         direction="left"
                     >
-                        <Buttons
+                        <Button
                             type="submit"
                             text="Create Room"
                             style="text-2xl text-[#010e42] border-[#010e42] hover:bg-[#010e42] w-full"
+                            icon={<DashboardCustomize fontSize="large" />}
                         />
                     </ToolTip>
                 </Link>
@@ -29,10 +31,11 @@ function Home() {
                         text="Enter a room code and join your friend's game."
                         direction="right"
                     >
-                        <Buttons
+                        <Button
                             type="submit"
                             text="Join Room"
                             style="text-2xl text-[#010e42] border-[#010e42] hover:bg-[#010e42] w-full"
+                            icon={<ExitToApp fontSize="large" />}
                         />
                     </ToolTip>
                 </Link>

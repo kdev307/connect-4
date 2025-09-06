@@ -14,10 +14,11 @@ import { Link, useNavigate, useParams } from "react-router";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { leaveRoom, playMove, resetGame } from "../../firebase/service";
-import Buttons from "../Buttons";
+import Button from "../Buttons";
 import { COLUMNS, ROWS } from "../../constants";
 import { getAuth } from "firebase/auth";
 import ToolTip from "../ToolTip";
+import { Logout } from "@mui/icons-material";
 
 function Connect4() {
     const [board, setBoard] = useState<Board | null>(null);
@@ -213,11 +214,12 @@ function Connect4() {
                     text="Leave the room and return to the home page."
                     direction="right"
                 >
-                    <Buttons
+                    <Button
                         type="submit"
                         text="Leave Room"
                         onClick={handleLeaveRoom}
                         style="text-2xl text-[#077] border-[#077] hover:bg-[#077] mx-auto"
+                        icon={<Logout fontSize="large" />}
                     />
                 </ToolTip>
             </div>
