@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import { Board, Player, Winner } from "../types";
-import Buttons from "./Buttons";
-// import InputModal from "./InputModal";
+import Button from "./Buttons";
+import InputModal from "./InputModal";
 import PlayerInfo from "./PlayerInfo";
 import Result from "./Result";
 import { stopEndGameSound } from "../utils/sounds";
 import { getAuth } from "firebase/auth";
 import ToolTip from "./ToolTip";
+import {
+    RoomPreferences,
+    RestartAlt,
+    Info as InfoIcon,
+} from "@mui/icons-material";
 
 interface InfoProps {
     players: { [key: number]: { name: string; uid: string } };
@@ -23,8 +28,8 @@ function Info({
     currentPlayer,
     winner,
     onReset,
-    // modal,
-    // onToggleInputModal,
+    modal,
+    onToggleInputModal,
     board,
 }: InfoProps) {
     const auth = getAuth();
@@ -58,10 +63,12 @@ function Info({
                     text="Align four of your discs — vertically, horizontally, or diagonally — to win!"
                     direction="top"
                 >
-                    <Buttons
+                    <Button
                         type="submit"
                         text="How to Win"
                         style="text-2xl text-[#5A002E] border-[#5A002E] hover:bg-[#5A002E] w-full"
+                        icon={<InfoIcon fontSize="large" />}
+                        // icon={<RestartAlt fontSize="large" />}
                     />
                 </ToolTip>
                 <h2
@@ -103,8 +110,8 @@ function Info({
                 )}
                 <PlayerInfo players={players} currentPlayer={currentPlayer} />
 
-                <ToolTip text="Click to restart the game." direction="bottom">
-                    <Buttons
+                <ToolTip text="Click to restart the game." direction="right">
+                    <Button
                         text="Restart Game"
                         onClick={onReset}
                         disabled={!gameHasStarted}
@@ -113,11 +120,22 @@ function Info({
                                 ? "text-gray-600 border-gray-600 cursor-not-allowed hover:bg-gray-600"
                                 : "text-[#560000] border-[#560000] hover:bg-[#560000] cursor-pointer"
                         }`}
+                        icon={<RestartAlt fontSize="large" />}
                     />
                 </ToolTip>
-                {/* <Buttons text="Customize Game" onClick={onToggleInputModal} style="text-[#010e42] border-[#010e42] hover:bg-[#010e42] "/> */}
+                <ToolTip
+                    text="Customize the game according to you."
+                    direction="right"
+                >
+                    <Button
+                        text="Customize Game"
+                        onClick={onToggleInputModal}
+                        style="text-[#010e42] border-[#010e42] hover:bg-[#010e42] "
+                        icon={<RoomPreferences fontSize="large" />}
+                    />
+                </ToolTip>
             </div>
-            {/* {modal && <InputModal onToggleInputModal={onToggleInputModal}/>} */}
+            {modal && <InputModal onToggleInputModal={onToggleInputModal} />}
         </>
     );
 }
