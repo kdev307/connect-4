@@ -32,7 +32,7 @@ function GameBoard({
 
     return (
         <div className="flex flex-col items-center justify-center">
-            <div className="flex gap-5 mb-4">
+            <div className="flex md:gap-5 mb-4">
                 {Array.from({ length: COLUMNS }).map((_, colIndex) => (
                     <div
                         key={colIndex}
@@ -78,14 +78,14 @@ function GameBoard({
 					after:z-[-1]
 					flex
 					flex-col
-					gap-5
+					md:gap-5
 					items-center
 					justify-center "
             >
                 {board.map((row, rowIndex) => (
                     <div
                         key={rowIndex}
-                        className="flex items-center justify-center gap-5"
+                        className="flex items-center justify-center md:gap-5"
                     >
                         {row.map((cell, columnIndex) => (
                             <Cells
