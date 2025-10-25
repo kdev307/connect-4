@@ -1,4 +1,4 @@
-import { Cell } from "../types";
+import { Cell } from "../../types";
 import Coin from "./Coin";
 
 interface CellProps {

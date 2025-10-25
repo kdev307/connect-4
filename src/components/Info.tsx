@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Board, Player, Winner } from "../types";
-import Button from "./Buttons";
+import Button from "./atoms/Buttons";
 import InputModal from "./InputModal";
 import PlayerInfo from "./PlayerInfo";
 import Result from "./Result";
 import { stopEndGameSound } from "../utils/sounds";
 import { getAuth } from "firebase/auth";
-import ToolTip from "./ToolTip";
+import ToolTip from "./atoms/ToolTip";
 import {
     RoomPreferences,
     RestartAlt,

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Button from "./Buttons";
+import Button from "./atoms/Buttons";
 import Close from "@mui/icons-material/Close";
-import Input from "./Inputs";
-import Label from "./Labels";
-import ToolTip from "./ToolTip";
+import Input from "./atoms/Inputs";
+import Label from "./atoms/Labels";
+import ToolTip from "./atoms/ToolTip";
 import { RocketLaunch } from "@mui/icons-material";
 
 interface InputModalProps {

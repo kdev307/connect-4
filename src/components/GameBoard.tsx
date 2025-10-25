@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Board, Player, Winner } from "../types";
-import Cells from "./Cells";
+import Cells from "./atoms/Cells";
 import { COLUMNS } from "../constants";
-import Coin from "./Coin";
+import Coin from "./atoms/Coin";
 import { getAuth } from "firebase/auth";
 
 interface GameBoardProps {

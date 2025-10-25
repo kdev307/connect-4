@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Title from "../Title";
-import Button from "../Buttons";
+import Title from "../atoms/Title";
+import Button from "../atoms/Buttons";
 import { Link, useNavigate } from "react-router";
 import { joinRoom } from "../../firebase/service";
-import ToolTip from "../ToolTip";
+import ToolTip from "../atoms/ToolTip";
 import { ExitToApp, ArrowBack } from "@mui/icons-material";
 
 function JoinRoom() {

@@ -1,4 +1,4 @@
-import Button from "./Buttons";
+import Button from "./atoms/Buttons";
 import Close from "@mui/icons-material/Close";
 
 interface ResultProps {

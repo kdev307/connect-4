@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import GameBoard from "../GameBoard";
-import Title from "../Title";
+import Title from "../atoms/Title";
 import Info from "../Info";
 import { Board, Player, Winner } from "../../types";
 import {
@@ -14,10 +14,10 @@ import { Link, useNavigate, useParams } from "react-router";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { leaveRoom, playMove, resetGame } from "../../firebase/service";
-import Button from "../Buttons";
+import Button from "../atoms/Buttons";
 import { COLUMNS, ROWS } from "../../constants";
 import { getAuth } from "firebase/auth";
-import ToolTip from "../ToolTip";
+import ToolTip from "../atoms/ToolTip";
 import { Logout } from "@mui/icons-material";
 
 function Connect4() {

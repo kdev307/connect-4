@@ -1,7 +1,7 @@
 import { Link } from "react-router";
-import Button from "../Buttons";
-import Title from "../Title";
-import ToolTip from "../ToolTip";
+import Button from "../atoms/Buttons";
+import Title from "../atoms/Title";
+import ToolTip from "../atoms/ToolTip";
 import HomeInfo from "../HomeInfo";
 import { ExitToApp, DashboardCustomize } from "@mui/icons-material";
 
