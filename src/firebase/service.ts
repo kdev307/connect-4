@@ -18,6 +18,7 @@ import {
     DEFAULT_CONNECT_COUNT,
     STATUSES,
 } from "../constants";
+import { getShuffledColors } from "../utils/getShuffledColors";
 
 // Create Room
 export async function createRoom(
@@ -31,6 +32,7 @@ export async function createRoom(
 ): Promise<string> {
     try {
         let roomCode = generateRoomCode();
+        const shuffledColors = getShuffledColors(settings.numPlayers);
         let exists = true;
 
         const auth = getAuth();
@@ -51,7 +53,9 @@ export async function createRoom(
 
                 await setDoc(roomRef, {
                     board,
-                    players: { 0: { name: playerName, uid } },
+                    players: {
+                        0: { name: playerName, uid, colour: shuffledColors[0] },
+                    },
                     currentTurn: 0,
                     winner: null,
                     status: STATUSES.WAITING,
@@ -61,6 +65,7 @@ export async function createRoom(
                         columns: settings.columns,
                         numPlayers: settings.numPlayers,
                         connectCount: settings.connectCount,
+                        shuffledColors,
                     },
                 });
                 break;
@@ -99,6 +104,7 @@ export async function joinRoom(
         columns: DEFAULT_COLUMNS,
         numPlayers: DEFAULT_PLAYERS,
         connectCount: DEFAULT_CONNECT_COUNT,
+        shuffledColors: getShuffledColors(DEFAULT_PLAYERS),
     };
 
     // Check if name is already taken
@@ -116,7 +122,10 @@ export async function joinRoom(
     let playerIndex = 0;
     while (players[playerIndex]) playerIndex++;
 
-    players[playerIndex] = { name: playerName, uid };
+    // Assign the color from the stored shuffled array
+    const playerColor = settings.shuffledColors[playerIndex];
+
+    players[playerIndex] = { name: playerName, uid, color: playerColor };
 
     await updateDoc(roomRef, {
         players,
