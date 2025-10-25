@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Board, Player, Winner } from "../types";
 import Button from "./atoms/Buttons";
 import InputModal from "./InputModal";
 import PlayerInfo from "./PlayerInfo";
@@ -12,26 +11,20 @@ import {
     RestartAlt,
     Info as InfoIcon,
 } from "@mui/icons-material";
+import { Room } from "../types";
 
 interface InfoProps {
-    players: { [key: number]: { name: string; uid: string } };
-    currentPlayer: Player;
-    winner: Winner;
+    room: Room;
     onReset: () => void;
     modal: boolean;
     onToggleInputModal: () => void;
-    board: Board | null;
 }
 
-function Info({
-    players,
-    currentPlayer,
-    winner,
-    onReset,
-    modal,
-    onToggleInputModal,
-    board,
-}: InfoProps) {
+function Info({ room, onReset, modal, onToggleInputModal }: InfoProps) {
+    const { board, players, winner, currentTurn, settings } = room;
+
+    const { connectCount = 4, numPlayers = 2 } = settings ?? {};
+
     const auth = getAuth();
     const currentUserUid = auth.currentUser?.uid;
 
@@ -52,15 +45,19 @@ function Info({
         stopEndGameSound();
     };
 
-    if (!board) return <h3>Unable to load the board</h3>;
-    const gameHasStarted = board.some((row) =>
-        row.some((cell) => cell !== null)
-    );
+    if (!board || !settings) return <h3>Unable to load the board</h3>;
+    const gameHasStarted =
+        board
+            ?.filter(Boolean)
+            .some(
+                (row) => Array.isArray(row) && row.some((cell) => cell !== null)
+            ) ?? false;
+
     return (
         <>
             <div className="mx-auto p-4 flex flex-col items-center justify-center gap-10">
                 <ToolTip
-                    text="Align four of your discs — vertically, horizontally, or diagonally — to win!"
+                    text={`Align ${connectCount} of your discs — vertically, horizontally, or diagonally — to win!`}
                     direction="top"
                 >
                     <Button
@@ -73,18 +70,19 @@ function Info({
                 </ToolTip>
                 <h2
                     className={`text-4xl text-center font-bold 
-		${currentPlayer === 0 ? "text-[#f00]" : "text-[#00f]"} ${
-                        winner !== null ||
-                        (Object.keys(players).length < 2 && "!text-purple-600")
-                    }`}
+		${
+            winner !== null ||
+            (Object.keys(players).length < numPlayers && "!text-purple-600")
+        }`}
+                    style={{ color: players[currentTurn]?.color }}
                 >
-                    {Object.keys(players).length < 2
-                        ? "Waiting for an opponent. Share the code to invite someone."
+                    {Object.keys(players).length < numPlayers
+                        ? "Waiting for opponent(s). Share the code to invite."
                         : winner !== null
                         ? "Game Over!"
-                        : players[currentPlayer]?.uid === currentUserUid
-                        ? `It's your turn ${players[currentPlayer]?.name}`
-                        : `Waiting for ${players[currentPlayer]?.name} to move`}
+                        : players[currentTurn]?.uid === currentUserUid
+                        ? `It's your turn ${players[currentTurn]?.name}`
+                        : `Waiting for ${players[currentTurn]?.name} to move`}
                 </h2>
 
                 {showResult && winner !== null && (
@@ -94,30 +92,29 @@ function Info({
                             handleCloseResult();
                         }}
                         message={
-                            winner && winner === -1
+                            winner === -1
                                 ? "It's a Draw"
-                                : `${players[currentPlayer]?.name}  wins!`
+                                : `${players[winner]?.name} wins!`
                         }
                         messageStyle={
-                            winner && winner === -1
+                            winner === -1
                                 ? "text-purple-600"
-                                : winner === 0
-                                ? "text-[#f00]"
-                                : "text-[#00f]"
+                                : `color: ${players[winner]?.color}`
                         }
                         onClose={handleCloseResult}
                     />
                 )}
-                <PlayerInfo players={players} currentPlayer={currentPlayer} />
 
-                <ToolTip text="Click to restart the game." direction="right">
+                <PlayerInfo players={players} currentPlayer={currentTurn} />
+
+                <ToolTip text="Click to restart the game." direction="top">
                     <Button
                         text="Restart Game"
                         onClick={onReset}
                         disabled={!gameHasStarted}
                         style={`${
                             !gameHasStarted
-                                ? "text-gray-600 border-gray-600 cursor-not-allowed hover:bg-gray-600"
+                                ? "mt-4 text-gray-600 border-gray-600 cursor-not-allowed hover:bg-gray-600"
                                 : "text-[#560000] border-[#560000] hover:bg-[#560000] cursor-pointer"
                         }`}
                         icon={<RestartAlt fontSize="large" />}
@@ -125,7 +122,7 @@ function Info({
                 </ToolTip>
                 <ToolTip
                     text="Customize the game according to you."
-                    direction="right"
+                    direction="bottom"
                 >
                     <Button
                         text="Customize Game"

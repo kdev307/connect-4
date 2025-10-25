@@ -1,18 +1,22 @@
 import { useState } from "react";
-import { Board, Player, Winner } from "../types";
+import { Board, Player, PlayerInfo, Winner } from "../types";
 import Cells from "./atoms/Cells";
-import { COLUMNS } from "../constants";
 import Coin from "./atoms/Coin";
 import { getAuth } from "firebase/auth";
 
 interface GameBoardProps {
-    players: { [key: number]: { name: string; uid: string } };
+    players: { [key: number]: PlayerInfo };
     board: Board | null;
     onCellClick: (columnIndex: number) => void;
     winner: Winner;
     winningCells: [number, number][];
     currentPlayer: Player;
     lastMove: { row: number; col: number } | null;
+    settings: {
+        rows: number;
+        columns: number;
+        connectCount: number;
+    };
 }
 
 function GameBoard({
@@ -23,8 +27,10 @@ function GameBoard({
     currentPlayer,
     lastMove,
     winningCells,
+    settings,
 }: GameBoardProps) {
     const [hoverColumn, setHoverColumn] = useState<number | null>(null);
+
     if (!board) return <h3>Unable to load the board</h3>;
 
     const auth = getAuth();
@@ -32,29 +38,27 @@ function GameBoard({
 
     return (
         <div className="flex flex-col items-center justify-center">
-            <div className="flex md:gap-5 mb-4">
-                {Array.from({ length: COLUMNS }).map((_, colIndex) => (
+            {/* Hover preview row */}
+            <div className="flex gap-2 mb-2">
+                {Array.from({ length: settings.columns }).map((_, colIndex) => (
                     <div
                         key={colIndex}
-                        className="size-36 opacity-75 flex items-center justify-center"
+                        className="size-36 flex items-center justify-center"
                     >
                         {winner === null &&
                             hoverColumn === colIndex &&
                             players[currentPlayer]?.uid === currentUserUid && (
                                 <Coin
-                                    coinColour={
-                                        currentPlayer === 0 ? "red" : "blue"
-                                    }
+                                    coinColour={players[currentPlayer].color}
                                     coinSize="size-32"
                                 />
                             )}
                     </div>
                 ))}
             </div>
-
+            {/* Game Board */}
             <div
-                className="
-					relative
+                className="relative
 					bg-[#2C2C2C]
 					p-6
 					shadow-lg
@@ -83,15 +87,13 @@ function GameBoard({
 					justify-center "
             >
                 {board.map((row, rowIndex) => (
-                    <div
-                        key={rowIndex}
-                        className="flex items-center justify-center md:gap-5"
-                    >
+                    <div key={rowIndex} className="flex gap-2">
                         {row.map((cell, columnIndex) => (
                             <Cells
                                 key={columnIndex}
                                 value={cell}
                                 onClick={() => onCellClick(columnIndex)}
+                                players={players}
                                 onMouseEnter={() => setHoverColumn(columnIndex)}
                                 onMouseLeave={() => setHoverColumn(null)}
                                 onTouchStart={() => setHoverColumn(columnIndex)}
@@ -163,7 +165,6 @@ function GameBoard({
                     ></div>
                 </div>
             </div>
-
             {/* <!-- Base --> */}
             <div
                 className="w-[90rem] h-80 bg-[#BC8F8F] mt-[-10rem] shadow-[0_8px_12px_rgba(0,0,0,0.5),inset_0_3px_6px_rgba(255,255,255,0.07)] rounded-sm -z-10 
@@ -173,6 +174,7 @@ function GameBoard({
                 after:content-[''] after:absolute after:top-[1.5rem] after:left-full after:w-[2.4rem] after:h-[98.6%] 
                 after:bg-[#846464] after:[transform:skewY(50deg)]"
             ></div>
+            {/* </div> */}
         </div>
     );
 }

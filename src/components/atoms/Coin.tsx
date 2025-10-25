@@ -16,14 +16,8 @@ const springDrop = {
 
 function Coin({ coinColour, coinSize, shouldAnimate, isWinning }: CoinProps) {
     const getCoinColorClass = () => {
-        switch (coinColour) {
-            case "red":
-                return "bg-[#f00] bg-radial-[at_25%_25%] from-white to-black/10";
-            case "blue":
-                return "bg-[#00f] bg-radial-[at_25%_25%] from-white to-black/10";
-            default:
-                return "bg-white";
-        }
+        if (!coinColour) return "bg-white"; // fallback
+        return `bg-[${coinColour}] bg-radial-[at_25%_25%] from-white to-black/10`;
     };
 
     const combinedAnimation = shouldAnimate ? { y: 0, opacity: 1 } : {};
@@ -48,13 +42,24 @@ function Coin({ coinColour, coinSize, shouldAnimate, isWinning }: CoinProps) {
                 initial={shouldAnimate ? { y: -600, opacity: 1 } : false}
                 animate={combinedAnimation}
                 transition={combinedTransition}
-                className={`size-full rounded-full ${getCoinColorClass()} ${
-                    isWinning && coinColour === "red"
-                        ? "shine-red"
-                        : isWinning && coinColour === "blue"
-                        ? "shine-blue"
-                        : ""
-                }`}
+                className={`size-full rounded-full flex items-center justify-center ${getCoinColorClass()}`}
+                style={{
+                    // background: coinColour, // fallback
+                    backgroundImage: isWinning
+                        ? `linear-gradient(
+                45deg,
+                ${coinColour} 0%,
+                ${coinColour} 40%,
+                #fff 50%,
+                ${coinColour} 60%,
+                ${coinColour} 100%
+            )`
+                        : `radial-gradient(circle at 25% 25%, white, ${coinColour} 90%)`,
+                    backgroundSize: isWinning ? "300% 100%" : undefined,
+                    animation: isWinning
+                        ? "shine 3s infinite linear"
+                        : undefined,
+                }}
             />
         </div>
     );

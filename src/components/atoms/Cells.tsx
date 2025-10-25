@@ -1,8 +1,9 @@
-import { Cell } from "../../types";
+import { Cell, PlayerInfo } from "../../types";
 import Coin from "./Coin";
 
 interface CellProps {
     value: Cell;
+    players: Record<number, PlayerInfo>;
     onClick: () => void;
     onMouseEnter: () => void;
     onMouseLeave: () => void;
@@ -15,6 +16,7 @@ interface CellProps {
 
 function Cells({
     value,
+    players,
     onClick,
     onMouseEnter,
     onMouseLeave,
@@ -36,9 +38,7 @@ function Cells({
             onTouchEnd={disabled ? undefined : onTouchEnd}
         >
             <Coin
-                coinColour={
-                    value === 0 ? "red" : value === 1 ? "blue" : "empty"
-                }
+                coinColour={value === null ? "empty" : players[value].color}
                 coinSize="size-20 md:size-32"
                 shouldAnimate={animateDrop}
                 isWinning={isWinningCell}
