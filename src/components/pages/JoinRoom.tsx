@@ -22,7 +22,7 @@ function JoinRoom() {
         }
     };
     return (
-        <div className="mx-auto p-6 max-w-md shadow-xl mt-40 rounded-2xl">
+        <div className="mx-auto p-6 max-w-2xl shadow-xl mt-40 rounded-2xl">
             <Title
                 title="Join Room"
                 style="text-4xl font-bold text-[#560000] mb-10"
