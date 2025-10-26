@@ -1,12 +1,16 @@
 interface InputProps {
     id: string;
     name: string;
-    value: number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
-    onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+    value: string | number;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
     required?: boolean;
     className?: string;
+    placeholder?: string;
+    type?: string;
+    min?: number;
+    max?: number;
 }
 
 function Input({
@@ -18,10 +22,14 @@ function Input({
     onBlur,
     required = false,
     className = "",
+    placeholder,
+    type,
+    min,
+    max,
 }: InputProps) {
     return (
         <input
-            type="number"
+            type={type}
             id={id}
             name={name}
             value={value}
@@ -29,6 +37,9 @@ function Input({
             onFocus={onFocus}
             onBlur={onBlur}
             required={required}
+            placeholder={placeholder}
+            min={min}
+            max={max}
             className={`flex-1 p-3 text-lg border rounded-md border-[#222] text-[#000] bg-[#fff] ${className}`}
         />
     );

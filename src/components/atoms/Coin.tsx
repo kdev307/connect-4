@@ -13,21 +13,10 @@ const springDrop = {
     damping: 18,
     mass: 1.5,
 };
-
 function Coin({ coinColour, coinSize, shouldAnimate, isWinning }: CoinProps) {
-    const getCoinColorClass = () => {
-        switch (coinColour) {
-            case "red":
-                return "bg-[#f00] bg-radial-[at_25%_25%] from-white to-black/10";
-            case "blue":
-                return "bg-[#00f] bg-radial-[at_25%_25%] from-white to-black/10";
-            default:
-                return "bg-white";
-        }
-    };
+    const isEmpty = !coinColour || coinColour === "empty";
 
     const combinedAnimation = shouldAnimate ? { y: 0, opacity: 1 } : {};
-
     const combinedTransition =
         shouldAnimate && isWinning
             ? { ...springDrop, repeat: Infinity, duration: 1.2 }
@@ -41,21 +30,31 @@ function Coin({ coinColour, coinSize, shouldAnimate, isWinning }: CoinProps) {
         <div
             className={`${coinSize} rounded-full border-2 border-black flex items-center justify-center bg-white`}
         >
-            <motion.div
-                key={`${coinColour}-${shouldAnimate ? "drop" : "static"}-${
-                    isWinning ? "win" : ""
-                }`}
-                initial={shouldAnimate ? { y: -600, opacity: 1 } : false}
-                animate={combinedAnimation}
-                transition={combinedTransition}
-                className={`size-full rounded-full ${getCoinColorClass()} ${
-                    isWinning && coinColour === "red"
-                        ? "shine-red"
-                        : isWinning && coinColour === "blue"
-                        ? "shine-blue"
-                        : ""
-                }`}
-            />
+            {!isEmpty && (
+                <motion.div
+                    key={`${coinColour}-${shouldAnimate ? "drop" : "static"}-${
+                        isWinning ? "win" : ""
+                    }`}
+                    initial={shouldAnimate ? { y: -600, opacity: 1 } : false}
+                    animate={combinedAnimation}
+                    transition={combinedTransition}
+                    className="size-full rounded-full flex items-center justify-center"
+                    style={{
+                        backgroundImage: isWinning
+                            ? `linear-gradient(
+                                45deg,
+                                ${coinColour} 0%,
+                                ${coinColour} 35%,
+                                #fff 50%,
+                                ${coinColour} 65%,
+                                ${coinColour} 100%
+                            )`
+                            : `radial-gradient(circle at 25% 25%, white, ${coinColour} 90%)`,
+                        backgroundSize: isWinning ? "300% 100%" : undefined,
+                        animation: isWinning ? "shine 3s infinite linear" : undefined,
+                    }}
+                />
+            )}
         </div>
     );
 }

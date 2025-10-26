@@ -1,8 +1,9 @@
-import { Cell } from "../../types";
+import { Cell, PlayerInfo } from "../../types";
 import Coin from "./Coin";
 
 interface CellProps {
     value: Cell;
+    players: Record<number, PlayerInfo>;
     onClick: () => void;
     onMouseEnter: () => void;
     onMouseLeave: () => void;
@@ -15,6 +16,7 @@ interface CellProps {
 
 function Cells({
     value,
+    players,
     onClick,
     onMouseEnter,
     onMouseLeave,
@@ -26,7 +28,7 @@ function Cells({
 }: CellProps) {
     return (
         <div
-            className={`size-36 flex items-center justify-center rounded-md
+            className={`size-20 md:size-28 flex items-center justify-center rounded-md
                 ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
             `}
             onClick={disabled ? undefined : onClick}
@@ -36,10 +38,8 @@ function Cells({
             onTouchEnd={disabled ? undefined : onTouchEnd}
         >
             <Coin
-                coinColour={
-                    value === 0 ? "red" : value === 1 ? "blue" : "empty"
-                }
-                coinSize="size-20 md:size-32"
+                coinColour={value === null ? "empty" : players[value].color}
+                coinSize="size-16 md:size-24"
                 shouldAnimate={animateDrop}
                 isWinning={isWinningCell}
             />

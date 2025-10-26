@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @layer base {
-	html {
-		font-size: 62.5%;
-	}
+    html {
+        font-size: 62.5%;
+    }
 }
 
 #root {
@@ -11,25 +11,25 @@
 }
 
 body {
-	background: linear-gradient(90deg, #ff7171,#fff, #7888ff);
+    background: linear-gradient(90deg, #ff7171, #fff, #7888ff);
 
-	background-size: 400% 400%;
-	animation: gradientMove 7s linear infinite;
+    background-size: 400% 400%;
+    animation: gradientMove 7s linear infinite;
 }
 
 @keyframes gradientMove {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
-.shine-red {
+/* .shine-red {
 	background: linear-gradient(
 		45deg,
 		#f00 0%,
@@ -53,14 +53,13 @@ body {
 	);
 	background-size: 300% 100%;
 	animation: shine 3s infinite linear;
-}
+} */
 
 @keyframes shine {
-	0% {
-		background-position: 200% 0;
-	}
-	100% {
-		background-position: -100% 0;
-	}
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
 }
-

@@ -5,30 +5,45 @@ import Input from "./atoms/Inputs";
 import Label from "./atoms/Labels";
 import ToolTip from "./atoms/ToolTip";
 import { RocketLaunch } from "@mui/icons-material";
+import { GameSettings } from "../types";
 
 interface InputModalProps {
     onToggleInputModal: () => void;
+    settings: GameSettings;
+    onSubmit: (newSettings: GameSettings) => void;
 }
 
-function InputModal({ onToggleInputModal }: InputModalProps) {
+function InputModal({ onToggleInputModal, settings, onSubmit }: InputModalProps) {
     const [formData, setFormData] = useState({
-        numPlayers: 2,
-        rows: 6,
-        columns: 7,
-        connectCount: 4,
+        numPlayers: settings.numPlayers,
+        rows: settings.rows,
+        columns: settings.columns,
+        connectCount: settings.connectCount,
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: Number(value),
-        }));
+        let numValue = Number(value);
+
+        // enforce limits manually
+        if (name === "numPlayers") numValue = Math.min(Math.max(numValue, 2), 8);
+        if (name === "rows") numValue = Math.min(Math.max(numValue, 6), 10);
+        if (name === "columns") numValue = Math.min(Math.max(numValue, 7), 10);
+        if (name === "connectCount")
+            numValue = Math.min(Math.max(numValue, 4), Math.min(formData.rows, formData.columns));
+
+        setFormData((prev) => ({ ...prev, [name]: numValue }));
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSubmit(formData);
+        onToggleInputModal();
     };
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm backdrop-bbottomness-50"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm"
             onClick={onToggleInputModal}
         >
             <div
@@ -44,24 +59,18 @@ function InputModal({ onToggleInputModal }: InputModalProps) {
                     Customize the Game
                 </h2>
 
-                <form className="grid grid-cols-1 gap-8">
+                <form className="grid grid-cols-1 gap-8" onSubmit={handleSubmit}>
                     <div className="flex gap-x-6 my-6">
-                        <ToolTip
-                            text="Set the number of players (minimum 2)."
-                            direction="bottom"
-                        >
+                        <ToolTip text="Set the number of players (minimum 2)." direction="bottom">
                             <div className="flex flex-col w-full gap-2">
-                                <Label
-                                    htmlFor="numPlayers"
-                                    text="Number of Players"
-                                />
+                                <Label htmlFor="numPlayers" text="Number of Players" />
                                 <Input
                                     id="numPlayers"
                                     name="numPlayers"
                                     value={formData.numPlayers}
                                     onChange={handleChange}
-                                    onFocus={() => {}}
-                                    onBlur={() => {}}
+                                    min={formData.numPlayers}
+                                    max={8}
                                     required
                                 />
                             </div>
@@ -72,17 +81,14 @@ function InputModal({ onToggleInputModal }: InputModalProps) {
                             direction="bottom"
                         >
                             <div className="flex flex-col w-full gap-2">
-                                <Label
-                                    htmlFor="connectCount"
-                                    text="Minimum Connections"
-                                />
+                                <Label htmlFor="connectCount" text="Minimum Connections" />
                                 <Input
                                     id="connectCount"
                                     name="connectCount"
                                     value={formData.connectCount}
                                     onChange={handleChange}
-                                    onFocus={() => {}}
-                                    onBlur={() => {}}
+                                    min={4}
+                                    max={Math.min(formData.rows, formData.columns)}
                                     required
                                 />
                             </div>
@@ -90,10 +96,7 @@ function InputModal({ onToggleInputModal }: InputModalProps) {
                     </div>
 
                     <div className="flex gap-x-6 my-6">
-                        <ToolTip
-                            text="Set the number of rows in the grid."
-                            direction="top"
-                        >
+                        <ToolTip text="Set the number of rows in the grid." direction="top">
                             <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="rows" text="Grid Rows" />
                                 <Input
@@ -101,17 +104,14 @@ function InputModal({ onToggleInputModal }: InputModalProps) {
                                     name="rows"
                                     value={formData.rows}
                                     onChange={handleChange}
-                                    onFocus={() => {}}
-                                    onBlur={() => {}}
+                                    min={6}
+                                    max={10}
                                     required
                                 />
                             </div>
                         </ToolTip>
 
-                        <ToolTip
-                            text="Set the number of columns in the grid."
-                            direction="top"
-                        >
+                        <ToolTip text="Set the number of columns in the grid." direction="top">
                             <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="columns" text="Grid Columns" />
                                 <Input
@@ -119,8 +119,8 @@ function InputModal({ onToggleInputModal }: InputModalProps) {
                                     name="columns"
                                     value={formData.columns}
                                     onChange={handleChange}
-                                    onFocus={() => {}}
-                                    onBlur={() => {}}
+                                    min={7}
+                                    max={10}
                                     required
                                 />
                             </div>
