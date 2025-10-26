@@ -110,13 +110,13 @@ function GameBoard({
                 ))}
             </div>
             {/* <!-- Legs --> */}
-            <div className="flex justify-between items-center relative z-0 w-3xl">
+            <div className="flex justify-start items-center relative z-0 w-9/12 gap-[85%]">
                 <Leg />
                 <Leg />
             </div>
             {/* <!-- Base --> */}
             <div
-                className="w-[72rem] h-64 bg-[#BC8F8F] mt-[-10rem] shadow-[0_8px_12px_rgba(0,0,0,0.5),inset_0_3px_6px_rgba(255,255,255,0.07)] rounded-sm -z-10 
+                className="w-full h-60 bg-[#BC8F8F] mt-[-10rem] shadow-[0_8px_12px_rgba(0,0,0,0.5),inset_0_3px_6px_rgba(255,255,255,0.07)] rounded-sm -z-10 
                 [transform:skewX(-40deg)]
                 before:content-[''] before:absolute before:bottom-[-2.4rem] before:left-[1rem] before:w-full 
                 before:h-[2.8rem] before:bg-[#a98181] before:[transform:skewX(40deg)]
