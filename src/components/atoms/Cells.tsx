@@ -28,7 +28,7 @@ function Cells({
 }: CellProps) {
     return (
         <div
-            className={`size-36 flex items-center justify-center rounded-md
+            className={`size-20 md:size-28 flex items-center justify-center rounded-md
                 ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
             `}
             onClick={disabled ? undefined : onClick}
@@ -39,7 +39,7 @@ function Cells({
         >
             <Coin
                 coinColour={value === null ? "empty" : players[value].color}
-                coinSize="size-20 md:size-32"
+                coinSize="size-16 md:size-24"
                 shouldAnimate={animateDrop}
                 isWinning={isWinningCell}
             />
