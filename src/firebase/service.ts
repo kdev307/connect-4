@@ -1,13 +1,6 @@
 import { generateRoomCode } from "../utils/generateRoomCode";
 import { db } from "../firebase/firebase";
-import {
-    deleteDoc,
-    doc,
-    getDoc,
-    setDoc,
-    Timestamp,
-    updateDoc,
-} from "firebase/firestore";
+import { deleteDoc, doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { isWinner } from "../utils/isWinner";
 import { Board, Cell, Player, Winner } from "../types";
@@ -54,7 +47,7 @@ export async function createRoom(
                 await setDoc(roomRef, {
                     board,
                     players: {
-                        0: { name: playerName, uid, colour: shuffledColors[0] },
+                        0: { name: playerName, uid, color: shuffledColors[0] },
                     },
                     currentTurn: 0,
                     winner: null,
@@ -83,10 +76,7 @@ export async function createRoom(
 }
 
 // Join Room
-export async function joinRoom(
-    roomCode: string,
-    playerName: string
-): Promise<void> {
+export async function joinRoom(roomCode: string, playerName: string): Promise<void> {
     const auth = getAuth();
     if (!auth.currentUser) await signInAnonymously(auth);
     const uid = auth.currentUser?.uid;
@@ -109,8 +99,7 @@ export async function joinRoom(
 
     // Check if name is already taken
     for (const key in players) {
-        if (players[key].name === playerName)
-            throw new Error("Name already taken.");
+        if (players[key].name === playerName) throw new Error("Name already taken.");
     }
 
     // Check if room is full
@@ -137,10 +126,7 @@ export async function joinRoom(
 }
 
 // Leave Room
-export async function leaveRoom(
-    roomCode: string,
-    playerID: string | undefined
-): Promise<void> {
+export async function leaveRoom(roomCode: string, playerID: string | undefined): Promise<void> {
     const normalizedCode = roomCode.trim().toUpperCase();
     const roomRef = doc(db, "rooms", normalizedCode);
     const roomSnap = await getDoc(roomRef);
@@ -171,11 +157,7 @@ export async function leaveRoom(
 }
 
 // Play Move
-export async function playMove(
-    roomCode: string,
-    column: number,
-    player: Player
-): Promise<void> {
+export async function playMove(roomCode: string, column: number, player: Player): Promise<void> {
     const roomRef = doc(db, "rooms", roomCode);
     const roomSnap = await getDoc(roomRef);
     if (!roomSnap.exists()) throw new Error("Room does not exist");
@@ -194,12 +176,7 @@ export async function playMove(
     // Convert flat board to 2D
     const board: Board = [];
     for (let row = 0; row < settings.rows; row++) {
-        board.push(
-            flatBoard.slice(
-                row * settings.columns,
-                (row + 1) * settings.columns
-            )
-        );
+        board.push(flatBoard.slice(row * settings.columns, (row + 1) * settings.columns));
     }
 
     if (winner !== null) throw new Error("Game is already finished");
@@ -220,13 +197,7 @@ export async function playMove(
     let newWinner: Winner = null;
     let winningCoords: [number, number][] | null = null;
 
-    winningCoords = isWinner(
-        board,
-        rowToPlace,
-        column,
-        player,
-        settings.connectCount
-    );
+    winningCoords = isWinner(board, rowToPlace, column, player, settings.connectCount);
     if (winningCoords) {
         newWinner = player;
     } else if (board.every((row) => row.every((cell) => cell !== null))) {
@@ -237,18 +208,11 @@ export async function playMove(
 
     await updateDoc(roomRef, {
         board: updatedFlatBoard,
-        currentTurn:
-            newWinner === null
-                ? (player + 1) % settings.numPlayers
-                : currentTurn,
+        currentTurn: newWinner === null ? (player + 1) % settings.numPlayers : currentTurn,
         winner: newWinner,
-        winningCells:
-            winningCoords?.map(([r, c]) => ({ row: r, col: c })) ?? [],
+        winningCells: winningCoords?.map(([r, c]) => ({ row: r, col: c })) ?? [],
         updatedAt: Timestamp.now(),
-        status:
-            newWinner !== null && newWinner !== -1
-                ? STATUSES.FINISHED
-                : STATUSES.PLAYING,
+        status: newWinner !== null && newWinner !== -1 ? STATUSES.FINISHED : STATUSES.PLAYING,
     });
 }
 

@@ -41,10 +41,7 @@ function GameBoard({
             {/* Hover preview row */}
             <div className="flex gap-2 mb-2">
                 {Array.from({ length: settings.columns }).map((_, colIndex) => (
-                    <div
-                        key={colIndex}
-                        className="size-36 flex items-center justify-center"
-                    >
+                    <div key={colIndex} className="size-36 flex items-center justify-center">
                         {winner === null &&
                             hoverColumn === colIndex &&
                             players[currentPlayer]?.uid === currentUserUid && (
@@ -105,8 +102,7 @@ function GameBoard({
                                     lastMove?.col === columnIndex
                                 }
                                 isWinningCell={winningCells.some(
-                                    ([r, c]) =>
-                                        r === rowIndex && c === columnIndex
+                                    ([r, c]) => r === rowIndex && c === columnIndex
                                 )}
                             />
                         ))}
