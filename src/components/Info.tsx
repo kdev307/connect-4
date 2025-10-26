@@ -1,30 +1,27 @@
 import { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
 import Button from "./atoms/Buttons";
 import InputModal from "./InputModal";
 import PlayerInfo from "./PlayerInfo";
 import Result from "./Result";
-import { stopEndGameSound } from "../utils/sounds";
-import { getAuth } from "firebase/auth";
 import ToolTip from "./atoms/ToolTip";
-import {
-    RoomPreferences,
-    RestartAlt,
-    Info as InfoIcon,
-} from "@mui/icons-material";
+import { stopEndGameSound } from "../utils/sounds";
+import { RoomPreferences, RestartAlt, Info as InfoIcon } from "@mui/icons-material";
 import { Room } from "../types";
+import { STATUSES } from "../constants";
+import { updateRoomSettings } from "../firebase/service";
 
 interface InfoProps {
     room: Room;
+    roomCode: string | undefined;
     onReset: () => void;
     modal: boolean;
     onToggleInputModal: () => void;
 }
 
-function Info({ room, onReset, modal, onToggleInputModal }: InfoProps) {
+function Info({ room, roomCode, onReset, modal, onToggleInputModal }: InfoProps) {
     const { board, players, winner, currentTurn, settings } = room;
-
     const { connectCount = 4, numPlayers = 2 } = settings ?? {};
-
     const auth = getAuth();
     const currentUserUid = auth.currentUser?.uid;
 
@@ -32,10 +29,7 @@ function Info({ room, onReset, modal, onToggleInputModal }: InfoProps) {
 
     useEffect(() => {
         if (winner !== null) {
-            const timeoutId = setTimeout(() => {
-                setShowResult(true);
-            }, 1000);
-
+            const timeoutId = setTimeout(() => setShowResult(true), 1000);
             return () => clearTimeout(timeoutId);
         }
     }, [winner]);
@@ -46,12 +40,22 @@ function Info({ room, onReset, modal, onToggleInputModal }: InfoProps) {
     };
 
     if (!board || !settings) return <h3>Unable to load the board</h3>;
-    const gameHasStarted =
-        board
-            ?.filter(Boolean)
-            .some(
-                (row) => Array.isArray(row) && row.some((cell) => cell !== null)
-            ) ?? false;
+
+    const gameHasStarted = board
+        .filter(Boolean)
+        .some((row) => Array.isArray(row) && row.some((cell) => cell !== null));
+
+    const handleSubmitSettings = async (newSettings: typeof settings) => {
+        if (!roomCode) {
+            console.error("Room not found!");
+            return;
+        }
+        try {
+            await updateRoomSettings(roomCode, newSettings);
+        } catch (err) {
+            console.error("Failed to update room settings:", err);
+        }
+    };
 
     return (
         <>
@@ -65,15 +69,14 @@ function Info({ room, onReset, modal, onToggleInputModal }: InfoProps) {
                         text="How to Win"
                         style="text-2xl text-[#5A002E] border-[#5A002E] hover:bg-[#5A002E] w-full"
                         icon={<InfoIcon fontSize="large" />}
-                        // icon={<RestartAlt fontSize="large" />}
                     />
                 </ToolTip>
+
                 <h2
-                    className={`text-4xl text-center font-bold 
-		${
-            winner !== null ||
-            (Object.keys(players).length < numPlayers && "!text-purple-600")
-        }`}
+                    className={`text-4xl text-center font-bold ${
+                        winner !== null ||
+                        (Object.keys(players).length < numPlayers && "!text-gray-700")
+                    }`}
                     style={{ color: players[currentTurn]?.color }}
                 >
                     {Object.keys(players).length < numPlayers
@@ -91,15 +94,9 @@ function Info({ room, onReset, modal, onToggleInputModal }: InfoProps) {
                             onReset();
                             handleCloseResult();
                         }}
-                        message={
-                            winner === -1
-                                ? "It's a Draw"
-                                : `${players[winner]?.name} wins!`
-                        }
+                        message={winner === -1 ? "It's a Draw" : `${players[winner]?.name} wins!`}
                         messageStyle={
-                            winner === -1
-                                ? "text-purple-600"
-                                : `color: ${players[winner]?.color}`
+                            winner === -1 ? "text-gray-700" : `color: ${players[winner]?.color}`
                         }
                         onClose={handleCloseResult}
                     />
@@ -107,32 +104,34 @@ function Info({ room, onReset, modal, onToggleInputModal }: InfoProps) {
 
                 <PlayerInfo players={players} currentPlayer={currentTurn} />
 
-                <ToolTip text="Click to restart the game." direction="top">
-                    <Button
-                        text="Restart Game"
-                        onClick={onReset}
-                        disabled={!gameHasStarted}
-                        style={`${
-                            !gameHasStarted
-                                ? "mt-4 text-gray-600 border-gray-600 cursor-not-allowed hover:bg-gray-600"
-                                : "text-[#560000] border-[#560000] hover:bg-[#560000] cursor-pointer"
-                        }`}
-                        icon={<RestartAlt fontSize="large" />}
-                    />
-                </ToolTip>
-                <ToolTip
-                    text="Customize the game according to you."
-                    direction="bottom"
-                >
+                {!gameHasStarted && room.status !== STATUSES.READY && (
+                    <ToolTip text="Click to restart the game." direction="top">
+                        <Button
+                            text="Restart Game"
+                            onClick={onReset}
+                            style="mt-4 text-[#560000] border-[#560000] hover:bg-[#560000] cursor-pointer"
+                            icon={<RestartAlt fontSize="large" />}
+                        />
+                    </ToolTip>
+                )}
+
+                <ToolTip text="Customize the game according to you." direction="bottom">
                     <Button
                         text="Customize Game"
                         onClick={onToggleInputModal}
-                        style="text-[#010e42] border-[#010e42] hover:bg-[#010e42] "
+                        style="text-[#010e42] border-[#010e42] hover:bg-[#010e42]"
                         icon={<RoomPreferences fontSize="large" />}
                     />
                 </ToolTip>
             </div>
-            {modal && <InputModal onToggleInputModal={onToggleInputModal} />}
+
+            {modal && (
+                <InputModal
+                    onToggleInputModal={onToggleInputModal}
+                    settings={settings}
+                    onSubmit={handleSubmitSettings}
+                />
+            )}
         </>
     );
 }

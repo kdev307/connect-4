@@ -16,6 +16,13 @@ export type WinningCell = {
     col: number;
 };
 
+export type GameSettings = {
+    numPlayers: number;
+    rows: number;
+    columns: number;
+    connectCount: number;
+};
+
 export type Room = {
     id?: string;
     board: Board;
@@ -25,11 +32,6 @@ export type Room = {
     createdAt: string;
     winningCells?: WinningCell[];
 
-    settings: {
-        rows: number;
-        columns: number;
-        numPlayers: number;
-        connectCount: number;
-    };
+    settings: GameSettings;
     players: Record<number, PlayerInfo>;
 };

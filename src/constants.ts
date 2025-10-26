@@ -7,6 +7,7 @@ export const STATUSES = {
     WAITING: "waiting",
     PLAYING: "playing",
     FINISHED: "finished",
+    READY: "ready",
 };
 
 export const PLAYER_COLORS: string[] = [

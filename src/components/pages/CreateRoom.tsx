@@ -26,13 +26,17 @@ function CreateRoom() {
     const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData((prev) => ({
-            ...prev,
-            [e.target.name]:
-                e.target.type === "number"
-                    ? Number(e.target.value)
-                    : e.target.value,
-        }));
+        const { name, value } = e.target;
+        let numValue = Number(value);
+
+        // enforce limits manually
+        if (name === "numPlayers") numValue = Math.min(Math.max(numValue, 2), 8);
+        if (name === "rows") numValue = Math.min(Math.max(numValue, 6), 10);
+        if (name === "columns") numValue = Math.min(Math.max(numValue, 7), 10);
+        if (name === "connectCount")
+            numValue = Math.min(Math.max(numValue, 4), Math.min(formData.rows, formData.columns));
+
+        setFormData((prev) => ({ ...prev, [name]: numValue }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -50,10 +54,7 @@ function CreateRoom() {
                 connectCount: formData.connectCount || DEFAULT_CONNECT_COUNT,
             };
 
-            const roomCode = await createRoom(
-                formData.name.trim(),
-                roomOptions
-            );
+            const roomCode = await createRoom(formData.name.trim(), roomOptions);
             navigate(`/room/${roomCode}`);
         } catch (error) {
             console.error(error);
@@ -114,15 +115,9 @@ function CreateRoom() {
                 {custom && (
                     <div className="flex flex-col gap-6 mt-6">
                         <div className="grid grid-cols-2 gap-4">
-                            <ToolTip
-                                text="Set the number of players (3-8)."
-                                direction="left"
-                            >
+                            <ToolTip text="Set the number of players (3-8)." direction="left">
                                 <div className="flex flex-col gap-2 p-4 rounded-2xl">
-                                    <Label
-                                        htmlFor="numPlayers"
-                                        text="Number of Players"
-                                    />
+                                    <Label htmlFor="numPlayers" text="Number of Players" />
                                     <Input
                                         id="numPlayers"
                                         name="numPlayers"
@@ -130,7 +125,7 @@ function CreateRoom() {
                                         value={formData.numPlayers}
                                         onChange={handleChange}
                                         required
-                                        min={3}
+                                        min={2}
                                         max={8}
                                         className={inputClass}
                                     />
@@ -142,10 +137,7 @@ function CreateRoom() {
                                 direction="right"
                             >
                                 <div className="flex flex-col gap-2 p-4 rounded-2xl">
-                                    <Label
-                                        htmlFor="connectCount"
-                                        text="Minimum Connections"
-                                    />
+                                    <Label htmlFor="connectCount" text="Minimum Connections" />
                                     <Input
                                         id="connectCount"
                                         name="connectCount"
@@ -154,10 +146,7 @@ function CreateRoom() {
                                         onChange={handleChange}
                                         required
                                         min={4}
-                                        max={Math.min(
-                                            formData.rows,
-                                            formData.columns
-                                        )}
+                                        max={Math.min(formData.rows, formData.columns)}
                                         className={inputClass}
                                     />
                                 </div>
@@ -190,10 +179,7 @@ function CreateRoom() {
                                 direction="right"
                             >
                                 <div className="flex flex-col gap-2 p-4 rounded-2xl">
-                                    <Label
-                                        htmlFor="columns"
-                                        text="Grid Columns"
-                                    />
+                                    <Label htmlFor="columns" text="Grid Columns" />
                                     <Input
                                         id="columns"
                                         name="columns"
@@ -211,10 +197,7 @@ function CreateRoom() {
                     </div>
                 )}
 
-                <ToolTip
-                    text="Click to create a new game room."
-                    direction="right"
-                >
+                <ToolTip text="Click to create a new game room." direction="right">
                     <Button
                         type="submit"
                         text="Create Room"

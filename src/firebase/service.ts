@@ -249,7 +249,56 @@ export async function resetGame(roomCode: string): Promise<void> {
         currentTurn: 0,
         winner: null,
         winningCells: [],
-        status: STATUSES.PLAYING,
+        status: STATUSES.READY,
+        updatedAt: Timestamp.now(),
+    });
+}
+
+// Customizing Game
+export async function updateRoomSettings(
+    roomCode: string,
+    newSettings: {
+        numPlayers: number;
+        rows: number;
+        columns: number;
+        connectCount: number;
+    }
+) {
+    const normalizedCode = roomCode.trim().toUpperCase();
+    const roomRef = doc(db, "rooms", normalizedCode);
+    const roomSnap = await getDoc(roomRef);
+
+    if (!roomSnap.exists()) throw new Error("Room does not exist.");
+
+    const data = roomSnap.data();
+    const oldSettings = data.settings;
+
+    // Check if board dimensions or player count changed
+    const dimensionsChanged =
+        oldSettings.rows !== newSettings.rows || oldSettings.columns !== newSettings.columns;
+
+    let updatedBoard: Board | undefined;
+
+    if (dimensionsChanged) {
+        // Reset the board
+        updatedBoard = Array(newSettings.rows)
+            .fill(null)
+            .map(() => Array(newSettings.columns).fill(null))
+            .flat();
+    }
+
+    // Update settings in Firestore
+    await updateDoc(roomRef, {
+        settings: {
+            ...oldSettings,
+            numPlayers: newSettings.numPlayers,
+            rows: newSettings.rows,
+            columns: newSettings.columns,
+            connectCount: newSettings.connectCount,
+        },
+        ...(updatedBoard
+            ? { board: updatedBoard, currentTurn: 0, winner: null, status: STATUSES.READY }
+            : {}),
         updatedAt: Timestamp.now(),
     });
 }

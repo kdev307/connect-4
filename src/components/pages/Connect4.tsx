@@ -137,10 +137,7 @@ function Connect4() {
             } else {
                 // Convert flat board (1D) into 2D grid
                 parsedBoard = Array.from({ length: rows }, (_, i) =>
-                    (rawBoard as Winner[]).slice(
-                        i * columns,
-                        i * columns + columns
-                    )
+                    (rawBoard as Winner[]).slice(i * columns, i * columns + columns)
                 );
             }
 
@@ -171,11 +168,8 @@ function Connect4() {
             const currentUids = Object.values(newPlayers).map((p) => p.uid);
             const auth = getAuth();
             const currentUid = auth.currentUser?.uid;
-            const leaver = Object.values(prevPlayers).find(
-                (p) => !currentUids.includes(p.uid)
-            );
-            if (leaver && leaver.uid !== currentUid)
-                alert(`${leaver.name} has left the room`);
+            const leaver = Object.values(prevPlayers).find((p) => !currentUids.includes(p.uid));
+            if (leaver && leaver.uid !== currentUid) alert(`${leaver.name} has left the room`);
 
             previousPlayersRef.current = newPlayers;
             setPlayers(newPlayers);
@@ -205,21 +199,12 @@ function Connect4() {
     return (
         <div className="m-auto p-4 flex flex-col items-center justify-center gap-4">
             <Link to="/">
-                <Title
-                    title="Play Connect 4"
-                    style="text-7xl font-extrabold text-[#014210]"
-                />
+                <Title title="Play Connect 4" style="text-7xl font-extrabold text-[#014210]" />
             </Link>
 
             <div className="flex items-center justify-center gap-20">
-                <Title
-                    title={`Room Code - ${roomCode}`}
-                    style="text-5xl font-bold text-[#707]"
-                />
-                <ToolTip
-                    text="Leave the room and return to the home page."
-                    direction="right"
-                >
+                <Title title={`Room Code - ${roomCode}`} style="text-5xl font-bold text-[#707]" />
+                <ToolTip text="Leave the room and return to the home page." direction="right">
                     <Button
                         type="submit"
                         text="Leave Room"
@@ -252,6 +237,7 @@ function Connect4() {
 
                     <Info
                         room={room}
+                        roomCode={roomCode}
                         // players={players}
                         // currentPlayer={currentPlayer}
                         // winner={winner}
