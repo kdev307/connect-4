@@ -197,7 +197,16 @@ export async function playMove(roomCode: string, column: number, player: Player)
     let newWinner: Winner = null;
     let winningCoords: [number, number][] | null = null;
 
-    winningCoords = isWinner(board, rowToPlace, column, player, settings.connectCount);
+    winningCoords = isWinner(
+        board,
+        rowToPlace,
+        column,
+        player,
+        settings.connectCount,
+        settings.rows,
+        settings.columns
+    );
+
     if (winningCoords) {
         newWinner = player;
     } else if (board.every((row) => row.every((cell) => cell !== null))) {
