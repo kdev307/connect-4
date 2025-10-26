@@ -182,7 +182,7 @@ function Connect4() {
     useEffect(() => {
         if (winner === null) return;
         if (winner !== null) setLastMove(null);
-        if (Object.keys(players).length < 2) return;
+        if (Object.keys(players).length < (room.settings?.numPlayers ?? 2)) return;
 
         const auth = getAuth();
         const currentUid = auth.currentUser?.uid;
@@ -194,7 +194,7 @@ function Connect4() {
         } else {
             playLoseSound();
         }
-    }, [winner, players]);
+    }, [winner, players, room.settings?.numPlayers]);
 
     return (
         <div className="m-auto p-4 flex flex-col items-center justify-center gap-4">
