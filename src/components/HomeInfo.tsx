@@ -10,47 +10,67 @@ function HomeInfo() {
                             Create or Join a Room:
                         </dt>
                         <dd className="ml-4">
-                            Start a new match by creating a room or enter a code
-                            to join your friend.
+                            Start a new match by creating a room or enter a code to join your
+                            friend.
                         </dd>
                     </div>
 
                     <div>
-                        <dt className="font-bold text-[#450000] underline">
-                            Share the Code:
-                        </dt>
+                        <dt className="font-bold text-[#450000] underline">Share the Code:</dt>
                         <dd className="ml-4">
-                            After creating a room, send your unique room code to
-                            the other player.
+                            After creating a room, send your unique room code to the other player.
                         </dd>
                     </div>
 
                     <div>
-                        <dt className="font-bold text-[#450000] underline">
-                            Start Playing:
-                        </dt>
+                        <dt className="font-bold text-[#450000] underline">Start Playing:</dt>
                         <dd className="ml-4">
-                            Players take turns dropping discs into the columns
-                            of the board.
+                            Players take turns dropping discs into the columns of the board.
                         </dd>
                     </div>
 
                     <div>
-                        <dt className="font-bold text-[#450000] underline">
-                            Connect Four to Win:
-                        </dt>
+                        <dt className="font-bold text-[#450000] underline">Connect Four to Win:</dt>
                         <dd className="ml-4">
-                            Align four of your discs — vertically, horizontally,
-                            or diagonally — to win!
+                            Align four of your discs — vertically, horizontally, or diagonally — to
+                            win!
                         </dd>
                     </div>
                 </dl>
             </Accordion>
+
             <Accordion title="Note">
                 <p className="text-xl sm:text-2xl font-medium leading-relaxed text-[#450000]">
-                    Mobile users for a better viewing experience, switch your
-                    browser view to desktop mode. .
+                    Mobile users for a better viewing experience, switch your browser view to
+                    desktop mode.
                 </p>
+            </Accordion>
+
+            <Accordion title="Customization">
+                <dl className="space-y-6 text-xl sm:text-2xl font-medium leading-relaxed">
+                    <div>
+                        <dt className="font-bold text-[#450000] underline">Board Size:</dt>
+                        <dd className="ml-4">
+                            Choose from different grid sizes for a more casual or challenging game
+                            experience.
+                        </dd>
+                    </div>
+
+                    <div>
+                        <dt className="font-bold text-[#450000] underline">Connection Rules:</dt>
+                        <dd className="ml-4">
+                            Change the number of discs needed to connect and win — not just four!
+                        </dd>
+                    </div>
+
+                    <div>
+                        <dt className="font-bold text-[#450000] underline">Player Count:</dt>
+                        <dd className="ml-4">
+                            Play with as few as 2 players or expand the competition with up to 8
+                            players in a single room.
+                        </dd>
+                    </div>
+                </dl>
             </Accordion>
         </div>
     );
