@@ -89,26 +89,37 @@ function CreateRoom() {
 
                 {/* Room Type Toggle */}
                 <div className="flex gap-4 justify-center">
-                    <Button
-                        type="button"
-                        text="Default"
-                        onClick={() => setCustom(false)}
-                        style={`px-6 py-2 rounded-full font-semibold border-[#995400] transition-all shadow-md ${
-                            !custom
-                                ? "!bg-[#995400] text-white hover:bg-[#995400]"
-                                : "bg-[#e5e5e5] text-[#995400] hover:bg-[#d9d9d9]"
-                        }`}
-                    />
-                    <Button
-                        type="button"
-                        text="Custom"
-                        onClick={() => setCustom(true)}
-                        style={`px-6 py-2 rounded-full font-semibold border-[#995400] transition-all shadow-md ${
-                            custom
-                                ? "!bg-[#995400] text-white hover:bg-[#995400]"
-                                : "bg-[#e5e5e5] text-[#995400] hover:bg-[#d9d9d9]"
-                        }`}
-                    />
+                    <div className="w-full">
+                        <ToolTip text="Play with the standard 2-player grid." direction="left">
+                            <Button
+                                type="button"
+                                text="Default"
+                                onClick={() => setCustom(false)}
+                                style={`px-6 py-2 rounded-full font-semibold border-[#995400] transition-all shadow-md ${
+                                    !custom
+                                        ? "!bg-[#995400] text-white hover:bg-[#995400]"
+                                        : "bg-[#e5e5e5] text-[#995400] hover:bg-[#d9d9d9]"
+                                }`}
+                            />{" "}
+                        </ToolTip>
+                    </div>
+                    <div className="w-full">
+                        <ToolTip
+                            text="Customize board size, players & connection rules."
+                            direction="right"
+                        >
+                            <Button
+                                type="button"
+                                text="Custom"
+                                onClick={() => setCustom(true)}
+                                style={`px-6 py-2 rounded-full font-semibold border-[#995400] transition-all shadow-md ${
+                                    custom
+                                        ? "!bg-[#995400] text-white hover:bg-[#995400]"
+                                        : "bg-[#e5e5e5] text-[#995400] hover:bg-[#d9d9d9]"
+                                }`}
+                            />
+                        </ToolTip>
+                    </div>
                 </div>
 
                 {/* Custom Room Form */}
