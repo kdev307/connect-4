@@ -27,6 +27,12 @@ function CreateRoom() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+
+        if (name === "name") {
+            setFormData((prev) => ({ ...prev, name: value }));
+            return;
+        }
+
         let numValue = Number(value);
 
         // enforce limits manually
@@ -97,8 +103,8 @@ function CreateRoom() {
                                 onClick={() => setCustom(false)}
                                 style={`px-6 py-2 rounded-full font-semibold border-[#995400] transition-all shadow-md ${
                                     !custom
-                                        ? "!bg-[#995400] text-white hover:bg-[#995400]"
-                                        : "bg-[#e5e5e5] text-[#995400] hover:bg-[#d9d9d9]"
+                                        ? "!bg-[#995400] text-white hover:bg-[#744000]"
+                                        : "bg-[#e5e5e5] text-[#995400] hover:bg-[#744000]"
                                 }`}
                             />{" "}
                         </ToolTip>
@@ -115,7 +121,7 @@ function CreateRoom() {
                                 style={`px-6 py-2 rounded-full font-semibold border-[#995400] transition-all shadow-md ${
                                     custom
                                         ? "!bg-[#995400] text-white hover:bg-[#995400]"
-                                        : "bg-[#e5e5e5] text-[#995400] hover:bg-[#d9d9d9]"
+                                        : "bg-[#e5e5e5] text-[#995400] hover:bg-[#744000]"
                                 }`}
                             />
                         </ToolTip>
